@@ -1,9 +1,11 @@
 # depslib dependency file v1.0
-1492707928 source:/home/darktong/work/testOpenGL2/main.cpp
+1492949616 source:/home/darktong/work/testOpenGL2/main.cpp
 	<iostream>
-	<cstdio>
+	<cmath>
 	<GL/glew.h>
 	<GLFW/glfw3.h>
+	<SOIL.h>
+	"Shader.h"
 
 1471498348 /usr/local/include/GLFW/glfw3.h
 	<stddef.h>
@@ -25,4 +27,16 @@
 	<GL/gl.h>
 	<GL/glext.h>
 	<GL/glu.h>
+
+1492881697 source:/home/darktong/work/testOpenGL2/src/Shader.cpp
+	"Shader.h"
+
+1492745654 /home/darktong/work/testOpenGL2/include/Shader.h
+	<string>
+	<fstream>
+	<sstream>
+	<iostream>
+	<GL/glew.h>
+
+1492878006 /usr/local/include/SOIL.h
 
