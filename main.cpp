@@ -11,10 +11,16 @@
 // SOIL
 #include <SOIL.h>
 
+//glm
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 //myShader
 #include "Shader.h"
 
-using namespace std;
+//using namespace std;
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
@@ -23,18 +29,11 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 double red=0.1, green=0.3, bule=0.3;
 
 // 定点数量
-GLint numberOfVertex=12;
+GLint numberOfVertex=6;
 
 // 两图片的显示比例
 GLfloat value;
 
-GLfloat vertices1[]=
-{
-    0.5f, 0.0f, 0.0f,   //中右
-    // buttom
-    -0.5f, -0.5f, 0.0f, //左下
-    0.0f, -0.5f, 0.0f
-};
 // triangle & color
 GLfloat vertices[]=
 {
@@ -43,74 +42,45 @@ GLfloat vertices[]=
     0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
     -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f
-    //0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-    //-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-    //0.0f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f
 };
 GLuint indices[]=
 {
     0, 1, 2,    //第一个三角形
     0, 2, 3,    //第二个三角形
-    //3, 6, 7,
-    //5, 7, 8
+    0, 1, 2,
+    0, 2, 3
 };
 // Function prototypes
+void init();
+int buildWindow(GLFWwindow *, const int &width, const int &height);
 void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
 void changeRGB();
+void testGlmFunction();
+
 int main()
 {
+    /* test Glm Function */
+    testGlmFunction();
 
     /* test the number of Vertex Attribute */
     GLint nrAttributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     std::cout << "Maxinum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
-    /*初始化环境
-    */
-    // 初始化GLFW
-    glfwInit();
-    // 设置版本信息
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    // 利用核心模式
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // 窗口大小不改变
-    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
-
-    /*新建第一个窗口
-    */
-
+    /* 初始化环境 */
+    init();
+    /* 新建第一个窗口 */
     // 获取新建的窗口指针
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
-    if(window == nullptr)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    if(buildWindow(window, WIDTH, HEIGHT) == -1)
         return -1;
-    }
-    // ?创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。
-    glfwMakeContextCurrent(window);
-
-    // 为了GLEW在管理OpenGL和函数指针时更多地使用现代化技术
-    glewExperimental = GL_TRUE;
-    if(glewInit() != GLEW_OK)
-    {
-        std::cout << "Failed to initialize GLEW" << std::endl;
-        return -1;
-    }
-    // 设置窗口大小参数
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-
-    // 左上角坐标和右下角坐标
-    glViewport(0, 0, width, height);
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader shaderProgram("./vertexAndColorShader.vs", "./fragmentShader.fs");
+    Shader shaderProgram("./movePosition.vecS", "./fragmentShader.fs");
 
     /* 3.创建顶点缓存对象,顶点数组对象 */
-    GLuint VBO, VBO1; //Vertex Buffer Objects
-    GLuint VAO, VAO1; //Vertex Array Object
+    GLuint VBO; //Vertex Buffer Objects
+    GLuint VAO; //Vertex Array Object
     GLuint EBO; //Element Buffer Object
     // 3.1申请缓存
     glGenBuffers(1, &VBO);
@@ -165,16 +135,28 @@ int main()
     glGenerateMipmap(GL_TEXTURE_2D);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
     SOIL_free_image_data(image1);
     /* 纹理结束 */
 
+    /* 构造旋转90度并缩小一半的变换矩阵 */
+    // 一个4×4的单位矩阵
+    glm::mat4 trans, trans1;
+    // 向量已z为轴旋转
+    //trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
+    // 向量缩小一倍
+    //trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+
     /* 画图（渲染） */
     // 为了使画图程序不会在执行完后立刻退出
-    GLfloat shift = 0.0;
+//    GLfloat shift = 0.0;
     value = 0.5;
+
+    // 减缓变换的时间
+    GLfloat ptime=0, ttime=0;
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
@@ -183,20 +165,16 @@ int main()
         // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。
         glClearColor(red, green, bule, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        changeRGB();
+        //changeRGB();
+
+        // 绑定
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  //      glBindTexture(GL_TEXTURE_2D, texture);
 
         // 渲染指令，绘制物体
         shaderProgram.Use();   //加载着色器程序
 
-        // 更新unifoorm颜色
-        //GLfloat timeValue = glfwGetTime();
-        //GLfloat greenValue = (sin(timeValue)/2)+0.5;
-        //GLint vertexColorLocation = glGetUniformLocation(shaderProgram.Program, "ourColor");
-        //glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-        // 更新uniform颜色
-        //shift += 0.001f;
-        //GLint vertexPositionLocation = glGetUniformLocation(shaderProgram.Program, "shift");
-        //glUniform3f(vertexPositionLocation, shift, 0.0f, 0.00f);
         // 加载纹理单元到着色器程序
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -205,37 +183,39 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture1);
         glUniform1i(glGetUniformLocation(shaderProgram.Program, "ourTexture1"), 1);
         glUniform1f(glGetUniformLocation(shaderProgram.Program, "value"), value);
-
-        // 绑定
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  //      glBindTexture(GL_TEXTURE_2D, texture);
-
+        // 自动旋转矩阵（根据时间参数）
+        ttime = (GLfloat)glfwGetTime();
+        // 判断变换时机
+        if(ttime - ptime >0.1f)
+        {
+            //ptime = ttime;
+            // 旋转矩阵
+            trans = glm::rotate(trans, (GLfloat)ttime, glm::vec3(0.0f, 0.0f, 1.0f));
+            // 位移矩阵
+            trans = glm::translate(trans, glm::vec3(0.001f, 0.001f, 0.0f));
+        }
         // 画图
-        //someOpenGLFunctionDrawsOurTriangle();
         //glDrawArrays(GL_TRIANGLES, 0, 3);
-        //glDrawArrays(GL_TRIANGLES, 1, 3);
-        //glDrawArrays(GL_TRIANGLES, 3, 3);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "trans"), 1, GL_FALSE, glm::value_ptr(trans));
+        glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
+
+        // 判断变换时机
+        if(ttime - ptime >0.1f)
+        {
+            ptime = ttime;
+            //trans = glm::rotate(trans, (GLfloat)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+            // 位移矩阵
+            trans1 = glm::translate(trans1, glm::vec3(-0.001f, -0.001f, 0.0f));
+            // 缩放矩阵
+            trans1 = glm::scale(trans1, glm::vec3(0.999f, 0.999f, 0.1f));
+        }
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "trans"), 1, GL_FALSE, glm::value_ptr(trans1));
         glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
 
         // 解绑
 //        glBindTexture(GL_TEXTURE_2D, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-
-        /*
-        // first triangle
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 1, 3);
-        glBindVertexArray(0);
-
-        // second triangle
-        glUseProgram(shaderProgram1);
-        glBindVertexArray(VAO1);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
-        */
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
@@ -246,6 +226,52 @@ int main()
     // 结束后正确释放之前分配的所有资源
     glfwTerminate();
     return 0;
+}
+
+//初始化
+ void init()
+ {
+    /* 初始化环境 */
+    // 初始化GLFW
+    glfwInit();
+    // 设置版本信息
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // 利用核心模式
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // 窗口大小不改变
+    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
+ }
+
+// 新建窗口
+int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
+{
+    /* 新建第一个窗口 */
+
+    if(window == nullptr)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    // ?创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。
+    glfwMakeContextCurrent(window);
+
+    // 为了GLEW在管理OpenGL和函数指针时更多地使用现代化技术
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
+    {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return -1;
+    }
+    int width, height;
+    // 设置窗口大小参数
+    glfwGetFramebufferSize(window, &width, &height);
+
+    // 左上角坐标和右下角坐标
+    glViewport(0, 0, width, height);
+
+    return true;
 }
 
 // 回调函数（操作），根据按键去操作窗口
@@ -267,6 +293,10 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
         if(value <= 0.0f)
             value = 0.0f;
     }
+    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    {
+
+    }
 }
 
 // 渲染操作函数
@@ -279,3 +309,20 @@ void changeRGB()
     if(green > 0.6) green -= 0.3;
     if(bule > 0.9) bule -= 0.6;
 }
+
+// 测试glm的函数
+void testGlmFunction()
+{
+    // 测试向量位移
+    glm::vec4 vec(1.0, 0.0, 0.0, 1.0);
+    glm::mat4 trans;
+    trans = glm::translate(trans, glm::vec3(1.0, 1.0, 0.0));
+    vec = trans*vec;
+    std::cout << '(' << vec.x << ',' << vec.y << ',' << vec.z << ')' << std::endl;
+}
+
+
+
+
+
+
