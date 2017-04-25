@@ -32,7 +32,7 @@ double red=0.1, green=0.3, bule=0.3;
 GLint numberOfVertex=6;
 
 // 两图片的显示比例
-GLfloat value, value1;
+GLfloat value, value1, value2;
 
 // 局部空间转世界空间的转换矩阵
 glm::mat4 model[11];
@@ -210,10 +210,11 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     /* 画图（渲染）*/
-    value = 45.f;
     GLfloat ptime[11]={0}, ttime[11]={10};
     bool flag[11] = {0};
+    value = 1.0;
     value1 = 1.33;
+    value2 = 1.0;
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
@@ -241,9 +242,13 @@ int main()
         viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
         projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
 
+        // 观察矩阵
+        glm::mat4 tmp;
+        view = glm::translate(tmp, glm::vec3(value1, value, value2));
+
         // 投射投影
         //projection = glm::perspective(value, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.f);
-        projection = glm::perspective(value, value1, 0.1f, 100.f);
+        projection = glm::perspective(45.0f, 1.3333f, 0.1f, 100.f);
 
         // 加载图片纹理到着色器程序
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -265,7 +270,7 @@ int main()
             if(ttime[i] - ptime[i] >0.1f)
             {
                 // 旋转矩阵-以x为轴
-                model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
+                if(i%3==0)model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
                 // 唯一矩阵
                 if(!flag[i]) model[i] = glm::translate(model[i], cubePosition[i]);
                 flag[i] = 1;
@@ -367,6 +372,14 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
     else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
     {
         value1 -= 0.5;
+    }
+    else if(key == GLFW_KEY_N && action == GLFW_PRESS)
+    {
+        value2 -= 0.5;
+    }
+    else if(key == GLFW_KEY_M && action == GLFW_PRESS)
+    {
+        value2 += 0.5;
     }
 }
 
