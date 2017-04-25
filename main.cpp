@@ -32,8 +32,63 @@ double red=0.1, green=0.3, bule=0.3;
 GLint numberOfVertex=6;
 
 // 两图片的显示比例
-GLfloat value;
+GLfloat value, value1;
 
+// 局部空间转世界空间的转换矩阵
+glm::mat4 model[11];
+// 世界空间转观察空间的转换矩阵
+glm::mat4 view;
+// 观察空间转裁剪空间的转换矩阵
+glm::mat4 projection;
+
+// 可调节角度
+GLfloat xDegree, yDegree, zDegree;
+
+// 构造立方体的36个顶点
+GLfloat vertices[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+/*
 // triangle & color
 GLfloat vertices[]=
 {
@@ -43,32 +98,44 @@ GLfloat vertices[]=
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
     -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f
 };
+*/
+glm::vec3 cubePosition[]
+{
+    glm::vec3( 0.0f,  0.0f,  -3.0f),
+    glm::vec3( 2.0f,  1.0f, -9.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    /*
+    glm::vec3(0.2, 0.1, -0.6),
+    glm::vec3(0.4, 0.4, -0.4),
+    glm::vec3(0.2, -0.3, 0.4),
+    glm::vec3(-0.33, -0.2, 0.2),
+    glm::vec3(-0.2, 0.1, 0.15),
+    */
+};
+
 GLuint indices[]=
 {
-    0, 1, 2,    //第一个三角形
-    0, 2, 3,    //第二个三角形
-    0, 1, 2,
-    0, 2, 3
+    0, 1, 2, 2, 3, 0,   // 正前
+    7, 6, 5, 5, 4, 7,   // 正后
+    3, 2, 6, 6, 7, 3,   // 左
+    4, 5, 1, 1, 0, 4,   // 右
+    4, 0, 3, 3, 7, 4,   // 上
+    1, 5, 6, 6, 2, 1,   // 下
 };
+
 // Function prototypes
 void init();
 int buildWindow(GLFWwindow *, const int &width, const int &height);
 void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
 void changeRGB();
-void testGlmFunction();
 
 int main()
 {
-    /* test Glm Function */
-    testGlmFunction();
-
-    /* test the number of Vertex Attribute */
-    GLint nrAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    std::cout << "Maxinum nr of vertex attributes supported: " << nrAttributes << std::endl;
-
     /* 初始化环境 */
     init();
+
     /* 新建第一个窗口 */
     // 获取新建的窗口指针
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
@@ -94,20 +161,17 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
     // 3.4设置顶点指针属性
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0); //第一个参数对应 layout的location
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0); //第一个参数对应 layout的location
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
-    // 3.4.1设置颜色属性
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
-    // 3.4.2设置纹理属性
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-    // 3.4解绑VAO
+    // 3.5解绑VAO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     /* 纹理 */
+    // 加载书柜图片
     // 1.利用SOUL加载图片
     int width1, height1;
     unsigned char* image = SOIL_load_image("container.jpg", &width1, &height1, 0, SOIL_LOAD_RGB);
@@ -125,6 +189,7 @@ int main()
     // 6.释放图片内存
     SOIL_free_image_data(image);
 
+    //加载滑稽脸图片
     int width2, height2;
     GLuint texture1;
     glGenTextures(1, &texture1);
@@ -135,85 +200,87 @@ int main()
     glGenerateMipmap(GL_TEXTURE_2D);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
     SOIL_free_image_data(image1);
-    /* 纹理结束 */
 
-    /* 构造旋转90度并缩小一半的变换矩阵 */
-    // 一个4×4的单位矩阵
-    glm::mat4 trans, trans1;
-    // 向量已z为轴旋转
-    //trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
-    // 向量缩小一倍
-    //trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+    /* 开启深度测试 */
+    // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
+    glEnable(GL_DEPTH_TEST);
 
-
-    /* 画图（渲染） */
-    // 为了使画图程序不会在执行完后立刻退出
-//    GLfloat shift = 0.0;
-    value = 0.5;
-
-    // 减缓变换的时间
-    GLfloat ptime=0, ttime=0;
+    /* 画图（渲染）*/
+    value = 45.f;
+    GLfloat ptime[11]={0}, ttime[11]={10};
+    bool flag[11] = {0};
+    value1 = 1.33;
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
         glfwPollEvents();
 
-        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。
-        glClearColor(red, green, bule, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
+        glClearColor(red, green, bule, 0.01f);
+        // 清除颜色缓存，清除深度缓存
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //changeRGB();
 
         // 绑定
         glBindVertexArray(VAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  //      glBindTexture(GL_TEXTURE_2D, texture);
 
+        // 设置着色器
         // 渲染指令，绘制物体
         shaderProgram.Use();   //加载着色器程序
 
-        // 加载纹理单元到着色器程序
+        // 获取位置
+        GLint ourTextureLoc, ourTextureLoc1, valueLoc,modelLoc, viewLoc, projectionLoc;
+        ourTextureLoc = glGetUniformLocation(shaderProgram.Program, "ourTexture");
+        ourTextureLoc1 = glGetUniformLocation(shaderProgram.Program, "ourTexture1");
+        valueLoc = glGetUniformLocation(shaderProgram.Program, "value");
+        viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
+        projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
+
+        // 投射投影
+        //projection = glm::perspective(value, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.f);
+        projection = glm::perspective(value, value1, 0.1f, 100.f);
+
+        // 加载图片纹理到着色器程序
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform1f(valueLoc, value);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(glGetUniformLocation(shaderProgram.Program, "ourTexture"), 0);
+        glUniform1i(ourTextureLoc, 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(glGetUniformLocation(shaderProgram.Program, "ourTexture1"), 1);
-        glUniform1f(glGetUniformLocation(shaderProgram.Program, "value"), value);
-        // 自动旋转矩阵（根据时间参数）
-        ttime = (GLfloat)glfwGetTime();
-        // 判断变换时机
-        if(ttime - ptime >0.1f)
-        {
-            //ptime = ttime;
-            // 旋转矩阵
-            trans = glm::rotate(trans, (GLfloat)ttime, glm::vec3(0.0f, 0.0f, 1.0f));
-            // 位移矩阵
-            trans = glm::translate(trans, glm::vec3(0.001f, 0.001f, 0.0f));
-        }
-        // 画图
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "trans"), 1, GL_FALSE, glm::value_ptr(trans));
-        glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
+        glUniform1i(ourTextureLoc1, 1);
 
+
+        // 自动旋转矩阵（根据时间参数）
         // 判断变换时机
-        if(ttime - ptime >0.1f)
+        for(int i=0;i<5;++i)
         {
-            ptime = ttime;
-            //trans = glm::rotate(trans, (GLfloat)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-            // 位移矩阵
-            trans1 = glm::translate(trans1, glm::vec3(-0.001f, -0.001f, 0.0f));
-            // 缩放矩阵
-            trans1 = glm::scale(trans1, glm::vec3(0.999f, 0.999f, 0.1f));
+            ttime[i] = (GLfloat)glfwGetTime();
+            if(ttime[i] - ptime[i] >0.1f)
+            {
+                // 旋转矩阵-以x为轴
+                model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
+                // 唯一矩阵
+                if(!flag[i]) model[i] = glm::translate(model[i], cubePosition[i]);
+                flag[i] = 1;
+                ptime[i] = ttime[i];
+            }
+            // 获取位置
+            modelLoc = glGetUniformLocation(shaderProgram.Program, "model");
+            // 加载纹理单元到着色器程序
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model[i]));
+            // 画图
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            //glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
         }
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "trans"), 1, GL_FALSE, glm::value_ptr(trans1));
-        glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
 
         // 解绑
-//        glBindTexture(GL_TEXTURE_2D, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
@@ -283,19 +350,23 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
     }
     else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
     {
-        value += 0.05f;
-        if(value >= 1.0f)
-            value = 1.0f;
+        value += 1.0f;
+        //if(value >= 1.0f)
+          //  value = 1.0f;
     }
     else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS)
     {
-        value -= 0.05;
-        if(value <= 0.0f)
-            value = 0.0f;
+        value -= 1.0f;
+        //if(value <= 0.0f)
+         //   value = 0.0f;
     }
     else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
     {
-
+        value1 += 0.5f;
+    }
+    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    {
+        value1 -= 0.5;
     }
 }
 

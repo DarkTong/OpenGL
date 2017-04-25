@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1493047189 source:/home/darktong/work/testOpenGL2/main.cpp
+1493139702 source:/home/darktong/work/testOpenGL2/main.cpp
 	<iostream>
 	<cmath>
 	<GL/glew.h>
