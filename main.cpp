@@ -41,8 +41,14 @@ glm::mat4 view;
 // 观察空间转裁剪空间的转换矩阵
 glm::mat4 projection;
 
-// 可调节角度
-GLfloat xDegree, yDegree, zDegree;
+// 摄像机参数
+glm::vec3 camerPos, camerFront, camerUp;
+
+// 摄像机时间参数（帧时间）
+GLfloat currentFrame, lastFrame, deltTime; // 当前时间，上一次时间， 时间差
+
+// 按键缓冲记录
+GLboolean keyF[1024];
 
 // 构造立方体的36个顶点
 GLfloat vertices[] = {
@@ -88,20 +94,10 @@ GLfloat vertices[] = {
     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
-/*
-// triangle & color
-GLfloat vertices[]=
-{
-    //position          //color             //texture position
-    0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-    -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f
-};
-*/
 glm::vec3 cubePosition[]
 {
-    glm::vec3( 0.0f,  0.0f,  -3.0f),
+    glm::vec3( 0.0f,  0.0f,  -0.0f),
+    glm::vec3( -5.0f,  4.0f,  -10.0f),
     glm::vec3( 2.0f,  1.0f, -9.0f),
     glm::vec3(-1.5f, -2.2f, -2.5f),
     glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -130,6 +126,7 @@ void init();
 int buildWindow(GLFWwindow *, const int &width, const int &height);
 void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
 void changeRGB();
+void doCamerMovement();
 
 int main()
 {
@@ -212,13 +209,23 @@ int main()
     /* 画图（渲染）*/
     GLfloat ptime[11]={0}, ttime[11]={10};
     bool flag[11] = {0};
-    value = 1.0;
+    value = 0.0;
     value1 = 1.33;
     value2 = 1.0;
+    //GLfloat radius = 30.0f;
+    // 初始化摄像机参数
+    camerFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    camerPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    camerUp = glm::vec3(0.0f, 1.0f, 0.0f);
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
         glfwPollEvents();
+        // 更新时间差
+        currentFrame = (GLfloat)glfwGetTime();
+        deltTime = currentFrame - lastFrame;
+        currentFrame = lastFrame;
+        doCamerMovement();
 
         // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
         glClearColor(red, green, bule, 0.01f);
@@ -243,8 +250,8 @@ int main()
         projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
 
         // 观察矩阵
-        glm::mat4 tmp;
-        view = glm::translate(tmp, glm::vec3(value1, value, value2));
+        //glm::mat4 tmp;
+        //view = glm::translate(tmp, glm::vec3(value1, value, value2));
 
         // 投射投影
         //projection = glm::perspective(value, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.f);
@@ -264,7 +271,7 @@ int main()
 
         // 自动旋转矩阵（根据时间参数）
         // 判断变换时机
-        for(int i=0;i<5;++i)
+        for(int i=0;i<6;++i)
         {
             ttime[i] = (GLfloat)glfwGetTime();
             if(ttime[i] - ptime[i] >0.1f)
@@ -273,6 +280,14 @@ int main()
                 if(i%3==0)model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
                 // 唯一矩阵
                 if(!flag[i]) model[i] = glm::translate(model[i], cubePosition[i]);
+
+                // 摄像机位置
+                //GLfloat camerPosX, camerPosZ;
+                //camerPosX = cos(-(GLfloat)glfwGetTime())*radius;
+                //camerPosZ = sin(-(GLfloat)glfwGetTime())*radius;
+                //view = glm::lookAt(glm::vec3(camerPosX, 0.0f, camerPosZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                view =glm::lookAt(camerPos, camerFront, camerUp);
+
                 flag[i] = 1;
                 ptime[i] = ttime[i];
             }
@@ -349,6 +364,10 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
 // 回调函数（操作），根据按键去操作窗口
 void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, GLint mode)
 {
+    if(action == GLFW_PRESS)
+        keyF[key] = GL_TRUE;
+    else if(action == GLFW_RELEASE)
+        keyF[key] = GL_FALSE;
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -356,14 +375,10 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
     else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
     {
         value += 1.0f;
-        //if(value >= 1.0f)
-          //  value = 1.0f;
     }
     else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS)
     {
         value -= 1.0f;
-        //if(value <= 0.0f)
-         //   value = 0.0f;
     }
     else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
     {
@@ -394,19 +409,29 @@ void changeRGB()
     if(bule > 0.9) bule -= 0.6;
 }
 
-// 测试glm的函数
-void testGlmFunction()
+// 摄像机移动
+void doCamerMovement()
 {
-    // 测试向量位移
-    glm::vec4 vec(1.0, 0.0, 0.0, 1.0);
-    glm::mat4 trans;
-    trans = glm::translate(trans, glm::vec3(1.0, 1.0, 0.0));
-    vec = trans*vec;
-    std::cout << '(' << vec.x << ',' << vec.y << ',' << vec.z << ')' << std::endl;
+    GLfloat camerSpeed = 0.001f*deltTime;
+    //camerSpeed = 0.005f;
+    if(keyF[GLFW_KEY_W] == GLFW_TRUE)  // 摄像机前移（不是上）
+    {
+        camerPos += camerSpeed*glm::normalize(camerFront - camerPos);
+    }
+    if(keyF[GLFW_KEY_S] == GLFW_TRUE)  // 摄像机后移（不是下）
+    {
+        camerPos -= camerSpeed*glm::normalize(camerFront - camerPos);
+    }
+    if(keyF[GLFW_KEY_A] == GLFW_TRUE)  // 摄像机左移
+    {
+        // 向标准化左向量移动
+        camerPos +=  camerSpeed*glm::normalize(glm::cross(camerUp, camerFront-camerPos));
+    }
+    if(keyF[GLFW_KEY_D] == GLFW_TRUE)  // 摄像机右移
+    {
+        // 向标准化右向量移动
+        camerPos +=  camerSpeed*glm::normalize(glm::cross(camerFront-camerPos, camerUp));
+    }
 }
-
-
-
-
 
 
