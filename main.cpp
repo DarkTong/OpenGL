@@ -19,6 +19,7 @@
 
 //myShader
 #include "Shader.h"
+#include "Camer.h"
 
 //using namespace std;
 
@@ -34,21 +35,18 @@ GLint numberOfVertex=6;
 // 两图片的显示比例
 GLfloat value, value1, value2;
 
+// 按键记录
+GLboolean keyF[1024]={0};
+
 // 局部空间转世界空间的转换矩阵
 glm::mat4 model[11];
-// 世界空间转观察空间的转换矩阵
-glm::mat4 view;
-// 观察空间转裁剪空间的转换矩阵
-glm::mat4 projection;
 
-// 摄像机参数
-glm::vec3 camerPos, camerFront, camerUp;
 
-// 摄像机时间参数（帧时间）
-GLfloat currentFrame, lastFrame, deltTime; // 当前时间，上一次时间， 时间差
-
-// 按键缓冲记录
-GLboolean keyF[1024];
+/* 创建摄影机对象 */
+Camer camer(glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, -1.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f),
+            (float)WIDTH, (float)HEIGHT);
 
 // 构造立方体的36个顶点
 GLfloat vertices[] = {
@@ -102,15 +100,8 @@ glm::vec3 cubePosition[]
     glm::vec3(-1.5f, -2.2f, -2.5f),
     glm::vec3(-3.8f, -2.0f, -12.3f),
     glm::vec3( 2.4f, -0.4f, -3.5f),
-    /*
-    glm::vec3(0.2, 0.1, -0.6),
-    glm::vec3(0.4, 0.4, -0.4),
-    glm::vec3(0.2, -0.3, 0.4),
-    glm::vec3(-0.33, -0.2, 0.2),
-    glm::vec3(-0.2, 0.1, 0.15),
-    */
 };
-
+/*
 GLuint indices[]=
 {
     0, 1, 2, 2, 3, 0,   // 正前
@@ -120,13 +111,16 @@ GLuint indices[]=
     4, 0, 3, 3, 7, 4,   // 上
     1, 5, 6, 6, 2, 1,   // 下
 };
+*/
 
 // Function prototypes
 void init();
 int buildWindow(GLFWwindow *, const int &width, const int &height);
-void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
 void changeRGB();
 void doCamerMovement();
+void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
+void mouse_callback(GLFWwindow *, double, double);
+void scroll_callback(GLFWwindow *, double, double);
 
 int main()
 {
@@ -156,14 +150,14 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); //索引数组
     // 3.3把顶点数组复制到缓冲中供OpenGL使用
     glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
     // 3.4设置顶点指针属性
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0); //第一个参数对应 layout的location
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     // 3.5解绑VAO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -212,19 +206,11 @@ int main()
     value = 0.0;
     value1 = 1.33;
     value2 = 1.0;
-    //GLfloat radius = 30.0f;
-    // 初始化摄像机参数
-    camerFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    camerPos = glm::vec3(0.0f, 0.0f, 0.0f);
-    camerUp = glm::vec3(0.0f, 1.0f, 0.0f);
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
         glfwPollEvents();
-        // 更新时间差
-        currentFrame = (GLfloat)glfwGetTime();
-        deltTime = currentFrame - lastFrame;
-        currentFrame = lastFrame;
+        // 摄影机移动
         doCamerMovement();
 
         // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
@@ -249,18 +235,15 @@ int main()
         viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
         projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
 
-        // 观察矩阵
-        //glm::mat4 tmp;
-        //view = glm::translate(tmp, glm::vec3(value1, value, value2));
-
-        // 投射投影
-        //projection = glm::perspective(value, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.f);
-        projection = glm::perspective(45.0f, 1.3333f, 0.1f, 100.f);
+        // 构造裁剪空间
+        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.0f);
 
         // 加载图片纹理到着色器程序
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glUniform1f(valueLoc, value);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camer.getViewMartix()));
+        //glm::mat4 vie;
+        //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(vie));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(ourTextureLoc, 0);
@@ -277,17 +260,9 @@ int main()
             if(ttime[i] - ptime[i] >0.1f)
             {
                 // 旋转矩阵-以x为轴
-                if(i%3==0)model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
+                model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
                 // 唯一矩阵
                 if(!flag[i]) model[i] = glm::translate(model[i], cubePosition[i]);
-
-                // 摄像机位置
-                //GLfloat camerPosX, camerPosZ;
-                //camerPosX = cos(-(GLfloat)glfwGetTime())*radius;
-                //camerPosZ = sin(-(GLfloat)glfwGetTime())*radius;
-                //view = glm::lookAt(glm::vec3(camerPosX, 0.0f, camerPosZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                view =glm::lookAt(camerPos, camerFront, camerUp);
-
                 flag[i] = 1;
                 ptime[i] = ttime[i];
             }
@@ -300,15 +275,19 @@ int main()
             //glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
         }
 
+
         // 解绑
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
-
-        // 根据用户输入去做相应的处理
+        // 注册按键回调函数，根据用户输入去做相应的处理
         glfwSetKeyCallback(window, key_callback);
+        // 注册鼠标回调函数，根据用户的鼠标移动做出相应的处理
+        glfwSetCursorPosCallback(window, mouse_callback);
+        // 注册鼠标滚轮回调函数，根据用户滚轮做出缩放处理
+        glfwSetScrollCallback(window, scroll_callback);
     }
     // 结束后正确释放之前分配的所有资源
     glfwTerminate();
@@ -358,9 +337,22 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     // 左上角坐标和右下角坐标
     glViewport(0, 0, width, height);
 
+    // 设置鼠标隐藏并且不能移除窗口
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     return true;
 }
 
+// 渲染操作函数
+void changeRGB()
+{
+    red += 0.0001;
+    green += 0.0002;
+    bule += 0.00001;
+    if(red > 0.7) red -= 0.6;
+    if(green > 0.6) green -= 0.3;
+    if(bule > 0.9) bule -= 0.6;
+}
 // 回调函数（操作），根据按键去操作窗口
 void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, GLint mode)
 {
@@ -398,39 +390,37 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
     }
 }
 
-// 渲染操作函数
-void changeRGB()
+// 回调函数，根据鼠标位置跟新目标坐标
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
-    red += 0.0001;
-    green += 0.0002;
-    bule += 0.00001;
-    if(red > 0.7) red -= 0.6;
-    if(green > 0.6) green -= 0.3;
-    if(bule > 0.9) bule -= 0.6;
+    camer.doCursorMovement(xpos, ypos);
+}
+
+// 回调函数，根据鼠标滚轮做出缩放操作
+void scroll_callback(GLFWwindow *window, double xOffset, double yOffset)
+{
+    camer.doScrollMovement(xOffset, yOffset);
 }
 
 // 摄像机移动
 void doCamerMovement()
 {
-    GLfloat camerSpeed = 0.001f*deltTime;
-    //camerSpeed = 0.005f;
+    GLfloat curTime = (GLfloat)glfwGetTime();
     if(keyF[GLFW_KEY_W] == GLFW_TRUE)  // 摄像机前移（不是上）
     {
-        camerPos += camerSpeed*glm::normalize(camerFront - camerPos);
+        camer.doCamerMovement(FORWARD, curTime);
     }
     if(keyF[GLFW_KEY_S] == GLFW_TRUE)  // 摄像机后移（不是下）
     {
-        camerPos -= camerSpeed*glm::normalize(camerFront - camerPos);
+        camer.doCamerMovement(BACKWARD, curTime);
     }
     if(keyF[GLFW_KEY_A] == GLFW_TRUE)  // 摄像机左移
     {
-        // 向标准化左向量移动
-        camerPos +=  camerSpeed*glm::normalize(glm::cross(camerUp, camerFront-camerPos));
+        camer.doCamerMovement(LEFT, curTime);
     }
     if(keyF[GLFW_KEY_D] == GLFW_TRUE)  // 摄像机右移
     {
-        // 向标准化右向量移动
-        camerPos +=  camerSpeed*glm::normalize(glm::cross(camerFront-camerPos, camerUp));
+        camer.doCamerMovement(RIGHT, curTime);
     }
 }
 
