@@ -24,7 +24,7 @@
 //using namespace std;
 
 // Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1200, HEIGHT = 800;
 
 // 颜色参数
 double red=0.1, green=0.3, bule=0.3;
@@ -90,11 +90,19 @@ GLfloat vertices[] = {
      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
      0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
     -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+
+    // 地板
+    -100.0, 0.0f, -100.0f, 0.0f, 1.0f,
+    100.0f, 0.0f, -100.0f, 1.0f, 1.0f,
+    100.0f, 0.0f, 100.0f, 1.0f, 0.0f,
+    100.0f, 0.0f, 100.0f, 1.0f, 0.0f,
+    -100.0f, 0.0f, 100.0f, 0.0f, 0.0f,
+    -100.0, 0.0f, -100.0f, 0.0f, 1.0f,
 };
 glm::vec3 cubePosition[]
 {
-    glm::vec3( 0.0f,  0.0f,  -0.0f),
+    glm::vec3( 20.0f,  20.0f,  20.0f),
     glm::vec3( -5.0f,  4.0f,  -10.0f),
     glm::vec3( 2.0f,  1.0f, -9.0f),
     glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -112,6 +120,7 @@ GLuint indices[]=
     1, 5, 6, 6, 2, 1,   // 下
 };
 */
+
 
 // Function prototypes
 void init();
@@ -189,8 +198,8 @@ int main()
     std::cout << "sizeof png:" << sizeof(image1) << std::endl;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, image1);
     glGenerateMipmap(GL_TEXTURE_2D);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -236,7 +245,7 @@ int main()
         projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
 
         // 构造裁剪空间
-        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
 
         // 加载图片纹理到着色器程序
         glUniform1f(valueLoc, value);
@@ -251,6 +260,8 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture1);
         glUniform1i(ourTextureLoc1, 1);
 
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "model"), 1, GL_FALSE, glm::value_ptr(model[10]));
+        glDrawArrays(GL_TRIANGLES, 36, 6);
 
         // 自动旋转矩阵（根据时间参数）
         // 判断变换时机
