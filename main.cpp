@@ -27,7 +27,8 @@
 const GLuint WIDTH = 1200, HEIGHT = 800;
 
 // 颜色参数
-double red=0.1, green=0.3, bule=0.3;
+//double red=0.3, green=0.5, bule=0.6;
+double red=0.1, green=0.1, bule=0.1;
 
 // 定点数量
 GLint numberOfVertex=6;
@@ -38,77 +39,70 @@ GLfloat value, value1, value2;
 // 按键记录
 GLboolean keyF[1024]={0};
 
-// 局部空间转世界空间的转换矩阵
-glm::mat4 model[11];
+// 单位矩阵
+glm::mat4 uniM4;
 
+// 灯光
+glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 /* 创建摄影机对象 */
-Camer camer(glm::vec3(0.0f, 0.0f, 0.0f),
+Camer camer(glm::vec3(0.0f, 0.0f, 5.0f),
             glm::vec3(0.0f, 0.0f, -1.0f),
             glm::vec3(0.0f, 1.0f, 0.0f),
             (float)WIDTH, (float)HEIGHT);
 
-// 构造立方体的36个顶点
+// 构造立方体 + 各面法向量
 GLfloat vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-
-    // 地板
-    -100.0, 0.0f, -100.0f, 0.0f, 1.0f,
-    100.0f, 0.0f, -100.0f, 1.0f, 1.0f,
-    100.0f, 0.0f, 100.0f, 1.0f, 0.0f,
-    100.0f, 0.0f, 100.0f, 1.0f, 0.0f,
-    -100.0f, 0.0f, 100.0f, 0.0f, 0.0f,
-    -100.0, 0.0f, -100.0f, 0.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
+// 物体位置
 glm::vec3 cubePosition[]
 {
-    glm::vec3( 20.0f,  20.0f,  20.0f),
-    glm::vec3( -5.0f,  4.0f,  -10.0f),
-    glm::vec3( 2.0f,  1.0f, -9.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(0.0f,  0.0f,  0.0f),
+    //glm::vec3( 1.0f, 10.0f,  -1.0f),
 };
+// 光源位置
+glm::vec3 lightPos(1.2, 1.0f, 2.0f);
 /*
 GLuint indices[]=
 {
@@ -143,78 +137,41 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader shaderProgram("./movePosition.vecS", "./fragmentShader.fs");
+    Shader shaderProgram("./shader/vecS/objectColor.vecS", "./shader/fs/objectColor.fs");
+    Shader lightShader("./shader/vecS/lightColor.vecS", "./shader/fs/lightColor.fs");
 
     /* 3.创建顶点缓存对象,顶点数组对象 */
     GLuint VBO; //Vertex Buffer Objects
-    GLuint VAO; //Vertex Array Object
-    GLuint EBO; //Element Buffer Object
-    // 3.1申请缓存
+    GLuint VAO, lightVAO; //Vertex Array Object
+    // 3.1 申请缓存 - 绑定 - 复制/设置 - 解绑
     glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    // 3.2绑定
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); //索引数组
-    // 3.3把顶点数组复制到缓冲中供OpenGL使用
     glBufferData(GL_ARRAY_BUFFER, sizeof vertices, vertices, GL_STATIC_DRAW);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof indices, indices, GL_STATIC_DRAW);
-    // 3.4设置顶点指针属性
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0); //第一个参数对应 layout的location
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+
+
+    // 物体
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    // 3.5解绑VAO
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    /* 纹理 */
-    // 加载书柜图片
-    // 1.利用SOUL加载图片
-    int width1, height1;
-    unsigned char* image = SOIL_load_image("container.jpg", &width1, &height1, 0, SOIL_LOAD_RGB);
-    std::cout << "sizeof jpg:" << sizeof(image) << std::endl;
-    // 2.获取纹理对象
-    GLuint texture;
-    glGenTextures(1, &texture);
-    // 3.绑定纹理
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // 4.生成纹理
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    // 5.解绑
-    glBindTexture(GL_TEXTURE_2D, 0);
-    // 6.释放图片内存
-    SOIL_free_image_data(image);
+    // 灯
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
-    //加载滑稽脸图片
-    int width2, height2;
-    GLuint texture1;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    unsigned char* image1 = SOIL_load_image("awesomeface.png", &width2, &height2, 0, SOIL_LOAD_RGB);
-    std::cout << "sizeof png:" << sizeof(image1) << std::endl;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE, image1);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    SOIL_free_image_data(image1);
+    glBindBuffer(GL_VERTEX_ARRAY, 0);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
     glEnable(GL_DEPTH_TEST);
 
     /* 画图（渲染）*/
-    GLfloat ptime[11]={0}, ttime[11]={10};
-    bool flag[11] = {0};
-    value = 0.0;
-    value1 = 1.33;
-    value2 = 1.0;
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
         // 检查事件， 检查有没有触发什么时间（键盘输入和鼠标移动）
@@ -228,68 +185,53 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //changeRGB();
 
-        // 绑定
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-        // 设置着色器
-        // 渲染指令，绘制物体
-        shaderProgram.Use();   //加载着色器程序
-
-        // 获取位置
-        GLint ourTextureLoc, ourTextureLoc1, valueLoc,modelLoc, viewLoc, projectionLoc;
-        ourTextureLoc = glGetUniformLocation(shaderProgram.Program, "ourTexture");
-        ourTextureLoc1 = glGetUniformLocation(shaderProgram.Program, "ourTexture1");
-        valueLoc = glGetUniformLocation(shaderProgram.Program, "value");
-        viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
-        projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
-
+        // 构造观察空间
+        glm::mat4 view = camer.getViewMartix();
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
 
-        // 加载图片纹理到着色器程序
-        glUniform1f(valueLoc, value);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camer.getViewMartix()));
-        //glm::mat4 vie;
-        //glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(vie));
+        // 物体着色器
+        shaderProgram.Use();
+        // 获取位置
+        GLint lightColorLoc, objectColorLoc, modelLoc, viewLoc, projectionLoc, lightPosLoc, camerPosLoc;
+        lightColorLoc = glGetUniformLocation(shaderProgram.Program, "lightColor");
+        objectColorLoc = glGetUniformLocation(shaderProgram.Program, "objectColor");
+        lightPosLoc = glGetUniformLocation(shaderProgram.Program, "lightPos");
+        camerPosLoc = glGetUniformLocation(shaderProgram.Program, "camerPos");
+        modelLoc = glGetUniformLocation(shaderProgram.Program, "model");
+        viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
+        projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
+        // 配置物体着色器程序参数
+        glUniform3f(lightColorLoc, lightColor.x, lightColor.y, lightColor.z);
+        glUniform3f(objectColorLoc, 1.0, 0.5, 0.31);
+        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(camerPosLoc, camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(ourTextureLoc, 0);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(ourTextureLoc1, 1);
-
-        glUniformMatrix4fv(glGetUniformLocation(shaderProgram.Program, "model"), 1, GL_FALSE, glm::value_ptr(model[10]));
-        glDrawArrays(GL_TRIANGLES, 36, 6);
-
-        // 自动旋转矩阵（根据时间参数）
-        // 判断变换时机
-        for(int i=0;i<6;++i)
-        {
-            ttime[i] = (GLfloat)glfwGetTime();
-            if(ttime[i] - ptime[i] >0.1f)
-            {
-                // 旋转矩阵-以x为轴
-                model[i] = glm::rotate(model[i], (GLfloat)(ttime[i]-ptime[i])*10.0f*(i+1), glm::vec3(1.0f*i/1.2, 0.3f*i, 0.5f));
-                // 唯一矩阵
-                if(!flag[i]) model[i] = glm::translate(model[i], cubePosition[i]);
-                flag[i] = 1;
-                ptime[i] = ttime[i];
-            }
-            // 获取位置
-            modelLoc = glGetUniformLocation(shaderProgram.Program, "model");
-            // 加载纹理单元到着色器程序
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model[i]));
-            // 画图
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            //glDrawElements(GL_TRIANGLES, numberOfVertex, GL_UNSIGNED_INT, 0);
-        }
-
-
-        // 解绑
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        // 绑定 - 画图 - 解绑
+        glBindVertexArray(VAO);
+        glm::mat4 model = glm::translate(uniM4, cubePosition[0]);
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
+
+        // 电灯着色起使用
+        lightShader.Use();
+        // 获取位置
+        modelLoc = glGetUniformLocation(lightShader.Program, "model");
+        viewLoc = glGetUniformLocation(lightShader.Program, "view");
+        projectionLoc = glGetUniformLocation(lightShader.Program, "projection");
+        // 配置电灯着色器参数
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        // 绑定 - 画图 - 解绑
+        glBindVertexArray(lightVAO);
+        glm::mat4 lightModel = glm::translate(uniM4, lightPos);
+        lightModel = glm::scale(lightModel, glm::vec3(0.2));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(lightModel));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
@@ -301,6 +243,9 @@ int main()
         glfwSetScrollCallback(window, scroll_callback);
     }
     // 结束后正确释放之前分配的所有资源
+    glDeleteVertexArrays(1, &lightVAO);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
     glfwTerminate();
     return 0;
 }
@@ -375,30 +320,6 @@ void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, 
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
-    else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
-    {
-        value += 1.0f;
-    }
-    else if(key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-    {
-        value -= 1.0f;
-    }
-    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-    {
-        value1 += 0.5f;
-    }
-    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-    {
-        value1 -= 0.5;
-    }
-    else if(key == GLFW_KEY_N && action == GLFW_PRESS)
-    {
-        value2 -= 0.5;
-    }
-    else if(key == GLFW_KEY_M && action == GLFW_PRESS)
-    {
-        value2 += 0.5;
-    }
 }
 
 // 回调函数，根据鼠标位置跟新目标坐标
@@ -434,5 +355,6 @@ void doCamerMovement()
         camer.doCamerMovement(RIGHT, curTime);
     }
 }
+
 
 
