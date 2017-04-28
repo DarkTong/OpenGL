@@ -153,7 +153,7 @@ int main()
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
@@ -171,6 +171,9 @@ int main()
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
     glEnable(GL_DEPTH_TEST);
 
+    // 其他参数
+    GLfloat radius = 2.332;
+    GLfloat curT=0;
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
@@ -189,6 +192,10 @@ int main()
         glm::mat4 view = camer.getViewMartix();
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
+        // 移动光源
+        curT = glfwGetTime();
+        lightPos.x = radius * cos(curT);
+        lightPos.z = radius * sin(curT);
 
         // 物体着色器
         shaderProgram.Use();
@@ -208,27 +215,29 @@ int main()
         glUniform3f(camerPosLoc, camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        // 绑定 - 画图 - 解绑
-        glBindVertexArray(VAO);
         glm::mat4 model = glm::translate(uniM4, cubePosition[0]);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        // 绑定 - 画图 - 解绑
+        glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
         // 电灯着色起使用
         lightShader.Use();
         // 获取位置
+        lightColorLoc = glGetUniformLocation(lightShader.Program, "lightColor");
         modelLoc = glGetUniformLocation(lightShader.Program, "model");
         viewLoc = glGetUniformLocation(lightShader.Program, "view");
         projectionLoc = glGetUniformLocation(lightShader.Program, "projection");
         // 配置电灯着色器参数
+        glUniform3f(lightColorLoc, lightColor.x, lightColor.y, lightColor.z);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        // 绑定 - 画图 - 解绑
-        glBindVertexArray(lightVAO);
         glm::mat4 lightModel = glm::translate(uniM4, lightPos);
         lightModel = glm::scale(lightModel, glm::vec3(0.2));
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(lightModel));
+        // 绑定 - 画图 - 解绑
+        glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
