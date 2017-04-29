@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1493452922 source:/home/darktong/work/testOpenGL2/main.cpp
+1493464874 source:/home/darktong/work/testOpenGL2/main.cpp
 	<iostream>
 	<cmath>
 	<GL/glew.h>
@@ -465,7 +465,7 @@
 1389458280 /home/darktong/work/testOpenGL2/include/glm/gtc/type_ptr.inl
 	<cstring>
 
-1493364349 /home/darktong/work/testOpenGL2/include/Camer.h
+1493463466 /home/darktong/work/testOpenGL2/include/Camer.h
 	<cmath>
 	<cstring>
 	<GL/glew.h>
@@ -476,6 +476,6 @@
 	<glm/gtc/type_ptr.hpp>
 	<Shader.h>
 
-1493364941 source:/home/darktong/work/testOpenGL2/src/Camer.cpp
+1493463521 source:/home/darktong/work/testOpenGL2/src/Camer.cpp
 	"Camer.h"
 
