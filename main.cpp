@@ -172,8 +172,8 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // 其他参数
-    GLfloat radius = 2.332;
-    GLfloat curT=0;
+    //GLfloat radius = 2.332;
+    //GLfloat curT=0;
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
     {
@@ -193,30 +193,64 @@ int main()
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
         // 移动光源
-        curT = glfwGetTime();
-        lightPos.x = radius * cos(curT);
-        lightPos.z = radius * sin(curT);
+        //curT = glfwGetTime();
+        //lightPos.x = radius * cos(curT);
+        //lightPos.z = radius * sin(curT);
 
         // 物体着色器
         shaderProgram.Use();
         // 获取位置
-        GLint lightColorLoc, objectColorLoc, modelLoc, viewLoc, projectionLoc, lightPosLoc, camerPosLoc;
+        // -位置参数
+        GLint lightColorLoc, lightPosLoc, viewPosLoc;
         lightColorLoc = glGetUniformLocation(shaderProgram.Program, "lightColor");
-        objectColorLoc = glGetUniformLocation(shaderProgram.Program, "objectColor");
         lightPosLoc = glGetUniformLocation(shaderProgram.Program, "lightPos");
-        camerPosLoc = glGetUniformLocation(shaderProgram.Program, "camerPos");
+        viewPosLoc = glGetUniformLocation(shaderProgram.Program, "viewPos");
+        // -摄像机参数
+        GLint modelLoc, viewLoc, projectionLoc;
         modelLoc = glGetUniformLocation(shaderProgram.Program, "model");
         viewLoc = glGetUniformLocation(shaderProgram.Program, "view");
         projectionLoc = glGetUniformLocation(shaderProgram.Program, "projection");
+        // -材质参数
+        GLint matAmbientLoc, matDiffuseLoc, matSpecularLoc, matShininessLoc;
+        matAmbientLoc = glGetUniformLocation(shaderProgram.Program, "material.ambient");
+        matDiffuseLoc = glGetUniformLocation(shaderProgram.Program, "material.diffuse");
+        matSpecularLoc = glGetUniformLocation(shaderProgram.Program, "material.specular");
+        matShininessLoc = glGetUniformLocation(shaderProgram.Program, "material.shininess");
+        // -光线参数
+        GLint lightAmbientLoc, lightDiffuseLoc, lightSpecularLoc;
+        lightAmbientLoc = glGetUniformLocation(shaderProgram.Program, "light.ambient");
+        lightDiffuseLoc = glGetUniformLocation(shaderProgram.Program, "light.diffuse");
+        lightSpecularLoc = glGetUniformLocation(shaderProgram.Program, "light.specular");
         // 配置物体着色器程序参数
+        // -配置位置参数
         glUniform3f(lightColorLoc, lightColor.x, lightColor.y, lightColor.z);
-        glUniform3f(objectColorLoc, 1.0, 0.5, 0.31);
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(camerPosLoc, camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glUniform3f(viewPosLoc, camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        // -配置摄像机参数
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glm::mat4 model = glm::translate(uniM4, cubePosition[0]);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        // -配置材质参数
+        glUniform3f(matAmbientLoc, 1.0, 0.5, 0.31);
+        glUniform3f(matDiffuseLoc, 1.0, 0.5, 0.31);
+        glUniform3f(matSpecularLoc, 0.5, 0.5, 0.5);
+        glUniform1f(matShininessLoc, 32.0f);
+        // -配置光线参数
+        /*
+        glUniform3f(lightAmbientLoc, 0.2, 0.2, 0.2);
+        glUniform3f(lightDiffuseLoc, 0.5, 0.5, 0.5);
+        glUniform3f(lightSpecularLoc, 1.0, 1.0, 1.0);
+        */
+        // 变换光源
+        glm::vec3 lightColor2(fabs(sin(glfwGetTime()*0.2)), fabs(sin(glfwGetTime()*0.7)), fabs(sin(glfwGetTime()*1.3)));
+        glm::vec3 lAmbient = lightColor2*glm::vec3(0.1);
+        glm::vec3 lDiffuse = lightColor2*glm::vec3(0.5);
+        glm::vec3 lSpecular = lightColor2*glm::vec3(1.0);
+        glUniform3f(lightAmbientLoc, lAmbient.x, lAmbient.y, lAmbient.z);
+        glUniform3f(lightDiffuseLoc, lDiffuse.x, lDiffuse.y, lDiffuse.z);
+        glUniform3f(lightSpecularLoc, lSpecular.x, lSpecular.y, lSpecular.z);
+
         // 绑定 - 画图 - 解绑
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -225,12 +259,16 @@ int main()
         // 电灯着色起使用
         lightShader.Use();
         // 获取位置
+        // -获取位置参数
         lightColorLoc = glGetUniformLocation(lightShader.Program, "lightColor");
+        // -获取摄像机参数
         modelLoc = glGetUniformLocation(lightShader.Program, "model");
         viewLoc = glGetUniformLocation(lightShader.Program, "view");
         projectionLoc = glGetUniformLocation(lightShader.Program, "projection");
         // 配置电灯着色器参数
+        // -配置位置参数
         glUniform3f(lightColorLoc, lightColor.x, lightColor.y, lightColor.z);
+        // -配置摄像机参数
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         glm::mat4 lightModel = glm::translate(uniM4, lightPos);
