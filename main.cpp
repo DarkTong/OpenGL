@@ -282,14 +282,18 @@ int main()
         matShininessLoc = glGetUniformLocation(shaderProgram.Program, "material.shininess");
         // -光线参数
         GLint lightPosLoc, lightAmbientLoc, lightDiffuseLoc, lightSpecularLoc;
-        GLint lightConstantLoc, lightLinearLoc, lightQuadraticLoc;
-        lightPosLoc = glGetUniformLocation(shaderProgram.Program, "light.direction");
+        GLint lightDirectionLoc, lightConstantLoc, lightLinearLoc, lightQuadraticLoc;
+        GLint lightCutOffLoc, lightOuterCutOfftLoc;
+        lightPosLoc = glGetUniformLocation(shaderProgram.Program, "light.lightPos");
+        lightDirectionLoc = glGetUniformLocation(shaderProgram.Program, "light.direction");
         lightAmbientLoc = glGetUniformLocation(shaderProgram.Program, "light.ambient");
         lightDiffuseLoc = glGetUniformLocation(shaderProgram.Program, "light.diffuse");
         lightSpecularLoc = glGetUniformLocation(shaderProgram.Program, "light.specular");
         lightConstantLoc = glGetUniformLocation(shaderProgram.Program, "light.constant");
         lightLinearLoc = glGetUniformLocation(shaderProgram.Program, "light.linear");
         lightQuadraticLoc = glGetUniformLocation(shaderProgram.Program, "light.quadratic");
+        lightCutOffLoc = glGetUniformLocation(shaderProgram.Program, "light.cutOff");
+        lightOuterCutOfftLoc = glGetUniformLocation(shaderProgram.Program, "light.outerCutOff");
         // 配置物体着色器程序参数
         // -配置位置参数
         glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
@@ -308,13 +312,16 @@ int main()
         //glUniform1i(matEmissionLoc, 2);
         glUniform1f(matShininessLoc, 32);
         // -配置光线参数
-        glUniform4f(lightPosLoc, 1.2, 1.0, 2.0, 1.0);
+        glUniform3f(lightPosLoc, camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glUniform4f(lightDirectionLoc, camer.camerFront.x, camer.camerFront.y, camer.camerFront.z, 1.0);
         glUniform3f(lightAmbientLoc, 0.2, 0.2, 0.2);
         glUniform3f(lightDiffuseLoc, 0.5, 0.5, 0.5);
         glUniform3f(lightSpecularLoc, 1.0, 1.0, 1.0);
         glUniform1f(lightConstantLoc, 1.0);
-        glUniform1f(lightLinearLoc, 0.09);
-        glUniform1f(lightQuadraticLoc, 0.032);
+        glUniform1f(lightLinearLoc, 0.027);
+        glUniform1f(lightQuadraticLoc, 0.0028);
+        glUniform1f(lightCutOffLoc, cos(glm::radians(12.5)));
+        glUniform1f(lightOuterCutOfftLoc, cos(glm::radians(17.5)));
 
         // 变换光源
         /*
