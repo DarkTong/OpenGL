@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1493468391 source:/home/darktong/work/testOpenGL2/main.cpp
+1493489372 source:/home/darktong/work/testOpenGL2/main.cpp
 	<iostream>
 	<cmath>
+	<string>
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<SOIL.h>
