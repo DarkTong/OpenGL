@@ -1,4 +1,6 @@
 # depslib dependency file v1.0
+0 <<<<<<< HEAD
+
 1493572289 source:/home/darktong/work/testOpenGL2/include/glm/detail/dummy.cpp
 	"../glm.hpp"
 	<limits>
@@ -484,7 +486,9 @@
 	"../geometric.hpp"
 	<limits>
 
-1493609127 source:/home/darktong/work/testOpenGL2/main.cpp
+1493517925 source:/home/darktong/work/testOpenGL2/main.cpp
+
+1467998991 ca4b981387bc6a5b598feeed902fbc43282c4
 	<iostream>
 	<cmath>
 	<string>
@@ -543,7 +547,18 @@
 	<SOIL.h>
 	"Mesh.h"
 
-1493572290 /home/darktong/work/testOpenGL2/include/Mesh.h
+1493540341 /home/darktong/work/testOpenGL2/include/Mesh.h
+	<string>
+	<vector>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	<glm/gtc/type_ptr.hpp>
+	<assimp/Importer.hpp>
+	<assimp/scene.h>
+	<assimp/postprocess.h>
+	"Shader.h"
 	<string>
 	<vector>
 	<GL/glew.h>
@@ -559,8 +574,33 @@
 1467998991 /usr/local/include/assimp/Importer.hpp
 	"types.h"
 	"config.h"
+	"types.h"
+	"config.h"
 
 1467998991 /usr/local/include/assimp/types.h
+	<sys/types.h>
+	<math.h>
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"defs.h"
+	"vector3.h"
+	"vector2.h"
+	"color4.h"
+	"matrix3x3.h"
+	"matrix4x4.h"
+	"quaternion.h"
+	<cstring>
+	<new>
+	<string>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+	"vector2.inl"
+	"vector3.inl"
+	"color4.inl"
+	"quaternion.inl"
+	"matrix3x3.inl"
+	"matrix4x4.inl"
 	<sys/types.h>
 	<math.h>
 	<stddef.h>
@@ -592,6 +632,10 @@
 	<math.h>
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
+	<cmath>
+	<math.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 
 1467998991 /usr/local/include/assimp/Compiler/pushpack1.h
 
@@ -602,16 +646,27 @@
 	<math.h>
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
+	<cmath>
+	<math.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 
 1467998991 /usr/local/include/assimp/color4.h
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
 
 1467998991 /usr/local/include/assimp/matrix3x3.h
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 
 1467998991 /usr/local/include/assimp/matrix4x4.h
+	"vector3.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 	"vector3.h"
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
@@ -621,15 +676,22 @@
 1467998991 /usr/local/include/assimp/vector2.inl
 	"vector2.h"
 	<cmath>
+	"vector2.h"
+	<cmath>
 
 1467998991 /usr/local/include/assimp/vector3.inl
+	"vector3.h"
+	<cmath>
 	"vector3.h"
 	<cmath>
 
 1467998991 /usr/local/include/assimp/color4.inl
 	"color4.h"
+	"color4.h"
 
 1467998991 /usr/local/include/assimp/quaternion.inl
+	"quaternion.h"
+	<cmath>
 	"quaternion.h"
 	<cmath>
 
@@ -639,8 +701,19 @@
 	<algorithm>
 	<cmath>
 	<limits>
+	"matrix3x3.h"
+	"matrix4x4.h"
+	<algorithm>
+	<cmath>
+	<limits>
 
 1467998991 /usr/local/include/assimp/matrix4x4.inl
+	"matrix4x4.h"
+	"matrix3x3.h"
+	"quaternion.h"
+	<algorithm>
+	<limits>
+	<cmath>
 	"matrix4x4.h"
 	"matrix3x3.h"
 	"quaternion.h"
@@ -659,22 +732,40 @@
 	"material.h"
 	"anim.h"
 	"metadata.h"
+	"types.h"
+	"texture.h"
+	"mesh.h"
+	"light.h"
+	"camera.h"
+	"material.h"
+	"anim.h"
+	"metadata.h"
 
 1467998991 /usr/local/include/assimp/texture.h
+	"types.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
 	"types.h"
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
 
 1467998991 /usr/local/include/assimp/mesh.h
 	"types.h"
+	"types.h"
 
 1467998991 /usr/local/include/assimp/light.h
+	"types.h"
 	"types.h"
 
 1467998991 /usr/local/include/assimp/camera.h
 	"types.h"
+	"types.h"
 
 1467998991 /usr/local/include/assimp/material.h
+	"types.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+	"material.inl"
 	"types.h"
 	"./Compiler/pushpack1.h"
 	"./Compiler/poppack1.h"
@@ -685,8 +776,15 @@
 1467998991 /usr/local/include/assimp/anim.h
 	"types.h"
 	"quaternion.h"
+	"types.h"
+	"quaternion.h"
 
 1467998991 /usr/local/include/assimp/metadata.h
+	<assert.h>
+	"Compiler/pstdint.h"
+	<limits.h>
+	<stdint.h>
+	<string>
 	<assert.h>
 	"Compiler/pstdint.h"
 	<limits.h>
@@ -703,14 +801,25 @@
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
+	<stddef.h>
+	<limits.h>
+	<signal.h>
+	<stdint.h>
+	<sys/inttypes.h>
+	<wchar.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
 
 1467998991 /usr/local/include/assimp/postprocess.h
+	"types.h"
 	"types.h"
 
 1493608476 source:/home/darktong/work/testOpenGL2/src/Camer.cpp
 	"Camer.h"
 
-1493572290 source:/home/darktong/work/testOpenGL2/src/Mesh.cpp
+1493531369 source:/home/darktong/work/testOpenGL2/src/Mesh.cpp
+	"Mesh.h"
 	"Mesh.h"
 
 1493569614 source:/home/darktong/work/testOpenGL2/src/Model.cpp
@@ -1204,7 +1313,7 @@
 	"../geometric.hpp"
 	<limits>
 
-1493620262 source:/home/darktong/work/testOpenGL4/main.cpp
+1493620818 source:/home/darktong/work/testOpenGL4/main.cpp
 	<iostream>
 	<cmath>
 	<string>
@@ -1256,6 +1365,8 @@
 1493620262 source:/home/darktong/work/testOpenGL4/src/Camer.cpp
 	"Camer.h"
 
+1493620262 D
+
 1493620262 source:/home/darktong/work/testOpenGL4/src/Mesh.cpp
 	"Mesh.h"
 
@@ -1264,4 +1375,6 @@
 
 1493620262 source:/home/darktong/work/testOpenGL4/src/Shader.cpp
 	"Shader.h"
+
+1493620262 
 
