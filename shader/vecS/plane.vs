@@ -5,11 +5,11 @@
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoords;
 
-uniform vec3 model;
-uniform vec3 view;
-uniform vec3 projection;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
-out TexCoords;
+out vec2 TexCoords;
 
 void main()
 {

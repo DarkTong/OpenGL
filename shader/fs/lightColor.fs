@@ -1,14 +1,10 @@
 #version 330 core
 
-// 光源颜色
-uniform vec3 lightColor;
-
 out vec4 color;
 
 void main()
 {
-    //color = vec4(lightColor, 1.0);
-    color = vec4(1.0f);
+    color = vec4(vec3(0.5, 0.1, 0.3), 1.0f);
 }
 
 
