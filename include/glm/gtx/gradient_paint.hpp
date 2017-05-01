@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@
 ///
 /// @defgroup gtx_gradient_paint GLM_GTX_gradient_paint
 /// @ingroup gtx
-/// 
+///
 /// @brief Functions that return the color of procedural gradient for specific coordinates.
 /// <glm/gtx/gradient_paint.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
@@ -48,27 +48,27 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_gradient_paint
-	/// @{
+/// @addtogroup gtx_gradient_paint
+/// @{
 
-	/// Return a color from a radial gradient.
-	/// @see - gtx_gradient_paint
-	template <typename T, precision P>
-	GLM_FUNC_DECL T radialGradient(
-		detail::tvec2<T, P> const & Center,
-		T const & Radius,
-		detail::tvec2<T, P> const & Focal,
-		detail::tvec2<T, P> const & Position);
+/// Return a color from a radial gradient.
+/// @see - gtx_gradient_paint
+template <typename T, precision P>
+GLM_FUNC_DECL T radialGradient(
+    detail::tvec2<T, P> const & Center,
+    T const & Radius,
+    detail::tvec2<T, P> const & Focal,
+    detail::tvec2<T, P> const & Position);
 
-	/// Return a color from a linear gradient.
-	/// @see - gtx_gradient_paint
-	template <typename T, precision P>
-	GLM_FUNC_DECL T linearGradient(
-		detail::tvec2<T, P> const & Point0,
-		detail::tvec2<T, P> const & Point1,
-		detail::tvec2<T, P> const & Position);
+/// Return a color from a linear gradient.
+/// @see - gtx_gradient_paint
+template <typename T, precision P>
+GLM_FUNC_DECL T linearGradient(
+    detail::tvec2<T, P> const & Point0,
+    detail::tvec2<T, P> const & Point1,
+    detail::tvec2<T, P> const & Position);
 
-	/// @}
+/// @}
 }// namespace glm
 
 #include "gradient_paint.inl"

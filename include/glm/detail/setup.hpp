@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -108,7 +108,7 @@
 // Compiler
 
 // User defines: GLM_FORCE_COMPILER_UNKNOWN
-// TODO ? __llvm__ 
+// TODO ? __llvm__
 
 #define GLM_COMPILER_UNKNOWN		0x00000000
 
@@ -212,7 +212,7 @@
 // CUDA
 #elif defined(__CUDACC__)
 #	if !defined(CUDA_VERSION) && !defined(GLM_FORCE_CUDA)
-#		include <cuda.h>  // make sure version is defined since nvcc does not define it itself! 
+#		include <cuda.h>  // make sure version is defined since nvcc does not define it itself!
 #	endif
 #	if CUDA_VERSION < 3000
 #		error "GLM requires CUDA 3.0 or higher"
@@ -272,7 +272,7 @@
 #		define GLM_COMPILER GLM_COMPILER_CLANG
 #	endif
 
-// G++ 
+// G++
 #elif(defined(__GNUC__) || defined(__MINGW32__))// || defined(__llvm__) || defined(__clang__)
 #	if (__GNUC__ == 3) && (__GNUC_MINOR__ == 4)
 #		define GLM_COMPILER GLM_COMPILER_GCC34
@@ -524,7 +524,7 @@
 	__has_feature(cxx_generalized_initializers))
 
 // OpenMP
-#ifdef _OPENMP 
+#ifdef _OPENMP
 #	if(GLM_COMPILER & GLM_COMPILER_GCC)
 #		if(GLM_COMPILER > GLM_COMPILER_GCC47)
 #			define GLM_HAS_OPENMP 31
@@ -546,7 +546,7 @@
 #define GLM_HAS_ANONYMOUS_UNION (GLM_LANG & GLM_LANG_CXXMS_FLAG)
 
 /////////////////
-// Platform 
+// Platform
 
 // User defines: GLM_FORCE_PURE GLM_FORCE_SSE2 GLM_FORCE_AVX
 
@@ -580,7 +580,7 @@
 #elif((GLM_PLATFORM & GLM_PLATFORM_APPLE) && (GLM_COMPILER & GLM_COMPILER_GCC))
 #	define GLM_ARCH GLM_ARCH_PURE
 #elif(((GLM_COMPILER & GLM_COMPILER_GCC) && (defined(__i386__) || defined(__x86_64__))) || (GLM_COMPILER & GLM_COMPILER_LLVM_GCC) || (GLM_COMPILER & GLM_COMPILER_CLANG))
-#	if defined(__AVX2__) 
+#	if defined(__AVX2__)
 #		define GLM_ARCH (GLM_ARCH_AVX2 | GLM_ARCH_AVX | GLM_ARCH_SSE4 | GLM_ARCH_SSE3 | GLM_ARCH_SSE2)
 #	elif defined(__AVX__)
 #		define GLM_ARCH (GLM_ARCH_AVX | GLM_ARCH_SSE4 | GLM_ARCH_SSE3 | GLM_ARCH_SSE2)
@@ -620,11 +620,50 @@
 #if(GLM_ARCH & GLM_ARCH_SSE2)
 #	include <emmintrin.h>
 #	if(GLM_COMPILER == GLM_COMPILER_VC8) // VC8 is missing some intrinsics, workaround
-		inline float _mm_cvtss_f32(__m128 A) { return A.m128_f32[0]; }
-		inline __m128 _mm_castpd_ps(__m128d PD) { union { __m128 ps; __m128d pd; } c; c.pd = PD; return c.ps; }
-		inline __m128d _mm_castps_pd(__m128 PS) { union { __m128 ps; __m128d pd; } c; c.ps = PS; return c.pd; }
-		inline __m128i _mm_castps_si128(__m128 PS) { union { __m128 ps; __m128i pi; } c; c.ps = PS; return c.pi; }
-		inline __m128 _mm_castsi128_ps(__m128i PI) { union { __m128 ps; __m128i pi; } c; c.pi = PI; return c.ps; }
+inline float _mm_cvtss_f32(__m128 A)
+{
+    return A.m128_f32[0];
+}
+inline __m128 _mm_castpd_ps(__m128d PD)
+{
+    union
+    {
+        __m128 ps;
+        __m128d pd;
+    } c;
+    c.pd = PD;
+    return c.ps;
+}
+inline __m128d _mm_castps_pd(__m128 PS)
+{
+    union
+    {
+        __m128 ps;
+        __m128d pd;
+    } c;
+    c.ps = PS;
+    return c.pd;
+}
+inline __m128i _mm_castps_si128(__m128 PS)
+{
+    union
+    {
+        __m128 ps;
+        __m128i pi;
+    } c;
+    c.ps = PS;
+    return c.pi;
+}
+inline __m128 _mm_castsi128_ps(__m128i PI)
+{
+    union
+    {
+        __m128 ps;
+        __m128i pi;
+    } c;
+    c.pi = PI;
+    return c.ps;
+}
 #	endif
 #endif//GLM_ARCH
 //#endif//(GLM_ARCH != GLM_ARCH_PURE)
@@ -667,13 +706,13 @@
 #endif//GLM_LANG
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// Qualifiers 
+// Qualifiers
 
 // User defines: GLM_FORCE_INLINE GLM_FORCE_CUDA
 
 #if(defined(GLM_FORCE_CUDA) || (GLM_COMPILER & GLM_COMPILER_CUDA))
-#	define GLM_CUDA_FUNC_DEF __device__ __host__ 
-#	define GLM_CUDA_FUNC_DECL __device__ __host__ 
+#	define GLM_CUDA_FUNC_DEF __device__ __host__
+#	define GLM_CUDA_FUNC_DECL __device__ __host__
 #else
 #	define GLM_CUDA_FUNC_DEF
 #	define GLM_CUDA_FUNC_DECL
@@ -724,9 +763,9 @@
 namespace glm
 {
 #if defined(GLM_FORCE_SIZE_T_LENGTH)
-	typedef std::size_t length_t;
+typedef std::size_t length_t;
 #else
-	typedef int length_t;
+typedef int length_t;
 #endif
 }//namespace glm
 

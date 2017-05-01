@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,215 +32,215 @@
 
 namespace glm
 {
-	// radians
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType radians
-	(
-		genType const & degrees
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'radians' only accept floating-point input");
+// radians
+template <typename genType>
+GLM_FUNC_QUALIFIER genType radians
+(
+    genType const & degrees
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'radians' only accept floating-point input");
 
-		return degrees * genType(0.01745329251994329576923690768489);
-	}
+    return degrees * genType(0.01745329251994329576923690768489);
+}
 
-	VECTORIZE_VEC(radians)
-	
-	// degrees
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType degrees
-	(
-		genType const & radians
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'degrees' only accept floating-point input");
+VECTORIZE_VEC(radians)
 
-		return radians * genType(57.295779513082320876798154814105);
-	}
+// degrees
+template <typename genType>
+GLM_FUNC_QUALIFIER genType degrees
+(
+    genType const & radians
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'degrees' only accept floating-point input");
 
-	VECTORIZE_VEC(degrees)
+    return radians * genType(57.295779513082320876798154814105);
+}
 
-	// sin
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType sin
-	(
-		genType const & angle
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'sin' only accept floating-point input");
+VECTORIZE_VEC(degrees)
 
-		return genType(::std::sin(angle));
-	}
+// sin
+template <typename genType>
+GLM_FUNC_QUALIFIER genType sin
+(
+    genType const & angle
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'sin' only accept floating-point input");
 
-	VECTORIZE_VEC(sin)
+    return genType(::std::sin(angle));
+}
 
-	// cos
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType cos(genType const & angle)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'cos' only accept floating-point input");
+VECTORIZE_VEC(sin)
 
-		return genType(::std::cos(angle));
-	}
+// cos
+template <typename genType>
+GLM_FUNC_QUALIFIER genType cos(genType const & angle)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'cos' only accept floating-point input");
 
-	VECTORIZE_VEC(cos)
+    return genType(::std::cos(angle));
+}
 
-	// tan
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType tan
-	(
-		genType const & angle
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'tan' only accept floating-point input");
+VECTORIZE_VEC(cos)
 
-		return genType(::std::tan(angle));
-	}
+// tan
+template <typename genType>
+GLM_FUNC_QUALIFIER genType tan
+(
+    genType const & angle
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'tan' only accept floating-point input");
 
-	VECTORIZE_VEC(tan)
+    return genType(::std::tan(angle));
+}
 
-	// asin
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType asin
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'asin' only accept floating-point input");
+VECTORIZE_VEC(tan)
 
-		return genType(::std::asin(x));
-	}
+// asin
+template <typename genType>
+GLM_FUNC_QUALIFIER genType asin
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'asin' only accept floating-point input");
 
-	VECTORIZE_VEC(asin)
+    return genType(::std::asin(x));
+}
 
-	// acos
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType acos
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'acos' only accept floating-point input");
+VECTORIZE_VEC(asin)
 
-		return genType(::std::acos(x));
-	}
+// acos
+template <typename genType>
+GLM_FUNC_QUALIFIER genType acos
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'acos' only accept floating-point input");
 
-	VECTORIZE_VEC(acos)
+    return genType(::std::acos(x));
+}
 
-	// atan
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType atan
-	(
-		genType const & y, 
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atan' only accept floating-point input");
+VECTORIZE_VEC(acos)
 
-		return genType(::std::atan2(y, x));
-	}
+// atan
+template <typename genType>
+GLM_FUNC_QUALIFIER genType atan
+(
+    genType const & y,
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atan' only accept floating-point input");
 
-	VECTORIZE_VEC_VEC(atan)
+    return genType(::std::atan2(y, x));
+}
 
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType atan
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atan' only accept floating-point input");
+VECTORIZE_VEC_VEC(atan)
 
-		return genType(::std::atan(x));
-	}
+template <typename genType>
+GLM_FUNC_QUALIFIER genType atan
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atan' only accept floating-point input");
 
-	VECTORIZE_VEC(atan)
+    return genType(::std::atan(x));
+}
 
-	// sinh
-	template <typename genType> 
-	GLM_FUNC_QUALIFIER genType sinh
-	(
-		genType const & angle
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'sinh' only accept floating-point input");
+VECTORIZE_VEC(atan)
 
-		return genType(std::sinh(angle));
-	}
+// sinh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType sinh
+(
+    genType const & angle
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'sinh' only accept floating-point input");
 
-	VECTORIZE_VEC(sinh)
+    return genType(std::sinh(angle));
+}
 
-	// cosh
-	template <typename genType> 
-	GLM_FUNC_QUALIFIER genType cosh
-	(
-		genType const & angle
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'cosh' only accept floating-point input");
+VECTORIZE_VEC(sinh)
 
-		return genType(std::cosh(angle));
-	}
+// cosh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType cosh
+(
+    genType const & angle
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'cosh' only accept floating-point input");
 
-	VECTORIZE_VEC(cosh)
+    return genType(std::cosh(angle));
+}
 
-	// tanh
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType tanh
-	(
-		genType const & angle
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'tanh' only accept floating-point input");
+VECTORIZE_VEC(cosh)
 
-		return genType(std::tanh(angle));
-	}
+// tanh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType tanh
+(
+    genType const & angle
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'tanh' only accept floating-point input");
 
-	VECTORIZE_VEC(tanh)
+    return genType(std::tanh(angle));
+}
 
-	// asinh
-	template <typename genType> 
-	GLM_FUNC_QUALIFIER genType asinh
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'asinh' only accept floating-point input");
-		
-		return (x < genType(0) ? genType(-1) : (x > genType(0) ? genType(1) : genType(0))) * log(abs(x) + sqrt(genType(1) + x * x));
-	}
+VECTORIZE_VEC(tanh)
 
-	VECTORIZE_VEC(asinh)
+// asinh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType asinh
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'asinh' only accept floating-point input");
 
-	// acosh
-	template <typename genType> 
-	GLM_FUNC_QUALIFIER genType acosh
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'acosh' only accept floating-point input");
+    return (x < genType(0) ? genType(-1) : (x > genType(0) ? genType(1) : genType(0))) * log(abs(x) + sqrt(genType(1) + x * x));
+}
 
-		if(x < genType(1))
-			return genType(0);
-		return log(x + sqrt(x * x - genType(1)));
-	}
+VECTORIZE_VEC(asinh)
 
-	VECTORIZE_VEC(acosh)
+// acosh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType acosh
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'acosh' only accept floating-point input");
 
-	// atanh
-	template <typename genType>
-	GLM_FUNC_QUALIFIER genType atanh
-	(
-		genType const & x
-	)
-	{
-		GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atanh' only accept floating-point input");
-		
-		if(abs(x) >= genType(1))
-			return 0;
-		return genType(0.5) * log((genType(1) + x) / (genType(1) - x));
-	}
+    if(x < genType(1))
+        return genType(0);
+    return log(x + sqrt(x * x - genType(1)));
+}
 
-	VECTORIZE_VEC(atanh)
+VECTORIZE_VEC(acosh)
+
+// atanh
+template <typename genType>
+GLM_FUNC_QUALIFIER genType atanh
+(
+    genType const & x
+)
+{
+    GLM_STATIC_ASSERT(std::numeric_limits<genType>::is_iec559, "'atanh' only accept floating-point input");
+
+    if(abs(x) >= genType(1))
+        return 0;
+    return genType(0.5) * log((genType(1) + x) / (genType(1) - x));
+}
+
+VECTORIZE_VEC(atanh)
 
 }//namespace glm

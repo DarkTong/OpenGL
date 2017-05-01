@@ -1,50 +1,24 @@
 # depslib dependency file v1.0
-1493468391 source:/home/darktong/work/testOpenGL2/main.cpp
-	<iostream>
-	<cmath>
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	<SOIL.h>
-	<glm/glm.hpp>
+1493572289 source:/home/darktong/work/testOpenGL2/include/glm/detail/dummy.cpp
+	"../glm.hpp"
+	<limits>
+	<glm/vec3.hpp>
+	<glm/geometric.hpp>
+	<glm/vec3.hpp>
+	<glm/vec4.hpp>
+	<glm/mat4x4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 	<glm/gtc/type_ptr.hpp>
-	"Shader.h"
-	"Camer.h"
+	<glm/vec2.hpp>
+	<glm/packing.hpp>
+	<glm/integer.hpp>
+	<glm/gtc/type_precision.hpp>
+	<glm/vec3.hpp>
+	<glm/geometric.hpp>
+	<glm/exponential.hpp>
+	<glm/gtc/random.hpp>
 
-1471498348 /usr/local/include/GLFW/glfw3.h
-	<stddef.h>
-	<stdint.h>
-	<OpenGL/gl3.h>
-	<OpenGL/gl3ext.h>
-	<OpenGL/gl.h>
-	<OpenGL/glu.h>
-	<GL/glcorearb.h>
-	<GLES/gl.h>
-	<GLES/glext.h>
-	<GLES2/gl2.h>
-	<GLES2/gl2ext.h>
-	<GLES3/gl3.h>
-	<GLES2/gl2ext.h>
-	<GLES3/gl31.h>
-	<GLES2/gl2ext.h>
-	<vulkan/vulkan.h>
-	<GL/gl.h>
-	<GL/glext.h>
-	<GL/glu.h>
-
-1493363084 source:/home/darktong/work/testOpenGL2/src/Shader.cpp
-	"Shader.h"
-
-1492745654 /home/darktong/work/testOpenGL2/include/Shader.h
-	<string>
-	<fstream>
-	<sstream>
-	<iostream>
-	<GL/glew.h>
-
-1492878006 /usr/local/include/SOIL.h
-
-1389458280 /home/darktong/work/testOpenGL2/include/glm/glm.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/glm.hpp
 	"detail/_fixes.hpp"
 	<cmath>
 	<climits>
@@ -76,17 +50,17 @@
 1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/_fixes.hpp
 	<cmath>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/fwd.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/fwd.hpp
 	"detail/type_int.hpp"
 	"detail/type_float.hpp"
 	"detail/type_vec.hpp"
 	"detail/type_mat.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/type_int.hpp
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/type_int.hpp
 	"setup.hpp"
 	<cstdint>
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/setup.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/setup.hpp
 	<cassert>
 	<cuda.h>
 	<intrin.h>
@@ -96,50 +70,50 @@
 	<pmmintrin.h>
 	<emmintrin.h>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/type_float.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/type_float.hpp
 	"setup.hpp"
 
 1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec.hpp
 	"precision.hpp"
 	"type_int.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/precision.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/precision.hpp
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat.hpp
 	"precision.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/vec2.hpp
+1493572290 /home/darktong/work/testOpenGL2/include/glm/vec2.hpp
 	"detail/type_vec2.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec2.hpp
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec2.hpp
 	"type_vec.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec2.inl"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/_swizzle.hpp
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/_swizzle.hpp
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/_swizzle_func.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/detail/_swizzle_func.hpp
 
-1393332478 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec2.inl
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec2.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/vec3.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/vec3.hpp
 	"detail/type_vec3.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec3.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec3.hpp
 	"type_vec.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec3.inl"
 
-1393332478 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec3.inl
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec3.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/vec4.hpp
+1493572288 /home/darktong/work/testOpenGL2/include/glm/vec4.hpp
 	"detail/type_vec4.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec4.hpp
+1493572290 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec4.hpp
 	"setup.hpp"
 	"type_vec.hpp"
 	"_swizzle.hpp"
@@ -147,24 +121,24 @@
 	<cstddef>
 	"type_vec4.inl"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec4.inl
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec4.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat2x2.hpp
+1493572287 /home/darktong/work/testOpenGL2/include/glm/mat2x2.hpp
 	"detail/type_mat2x2.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x2.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x2.hpp
 	"../fwd.hpp"
 	"type_vec2.hpp"
 	"type_mat.hpp"
 	<limits>
 	"type_mat2x2.inl"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x2.inl
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x2.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat2x3.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/mat2x3.hpp
 	"detail/type_mat2x3.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x3.hpp
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x3.hpp
 	"../fwd.hpp"
 	"type_vec2.hpp"
 	"type_vec3.hpp"
@@ -172,12 +146,12 @@
 	<limits>
 	"type_mat2x3.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x3.inl
+1493572284 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x3.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat2x4.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/mat2x4.hpp
 	"detail/type_mat2x4.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x4.hpp
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x4.hpp
 	"../fwd.hpp"
 	"type_vec2.hpp"
 	"type_vec4.hpp"
@@ -185,9 +159,9 @@
 	<limits>
 	"type_mat2x4.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x4.inl
+1493572290 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat2x4.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat3x2.hpp
+1493572288 /home/darktong/work/testOpenGL2/include/glm/mat3x2.hpp
 	"detail/type_mat3x2.hpp"
 
 1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x2.hpp
@@ -198,24 +172,24 @@
 	<limits>
 	"type_mat3x2.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x2.inl
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x2.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat3x3.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/mat3x3.hpp
 	"detail/type_mat3x3.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x3.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x3.hpp
 	"../fwd.hpp"
 	"type_vec3.hpp"
 	"type_mat.hpp"
 	<limits>
 	"type_mat3x3.inl"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x3.inl
+1493572287 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x3.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat3x4.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/mat3x4.hpp
 	"detail/type_mat3x4.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x4.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x4.hpp
 	"../fwd.hpp"
 	"type_vec3.hpp"
 	"type_vec4.hpp"
@@ -225,10 +199,10 @@
 
 1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat3x4.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat4x2.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/mat4x2.hpp
 	"detail/type_mat4x2.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x2.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x2.hpp
 	"../fwd.hpp"
 	"type_vec2.hpp"
 	"type_vec4.hpp"
@@ -238,10 +212,10 @@
 
 1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x2.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat4x3.hpp
+1493572290 /home/darktong/work/testOpenGL2/include/glm/mat4x3.hpp
 	"detail/type_mat4x3.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x3.hpp
+1493572287 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x3.hpp
 	"../fwd.hpp"
 	"type_vec3.hpp"
 	"type_vec4.hpp"
@@ -249,12 +223,12 @@
 	<limits>
 	"type_mat4x3.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x3.inl
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x3.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/mat4x4.hpp
+1493572286 /home/darktong/work/testOpenGL2/include/glm/mat4x4.hpp
 	"detail/type_mat4x4.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x4.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x4.hpp
 	"../fwd.hpp"
 	"type_vec4.hpp"
 	"type_mat.hpp"
@@ -262,15 +236,15 @@
 	<cstddef>
 	"type_mat4x4.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x4.inl
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/type_mat4x4.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/trigonometric.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/trigonometric.hpp
 	"detail/func_trigonometric.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_trigonometric.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/detail/func_trigonometric.hpp
 	"func_trigonometric.inl"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_trigonometric.inl
+1493572284 /home/darktong/work/testOpenGL2/include/glm/detail/func_trigonometric.inl
 	"_vectorize.hpp"
 	<cmath>
 	<limits>
@@ -281,7 +255,7 @@
 	"type_vec3.hpp"
 	"type_vec4.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec1.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec1.hpp
 	"../fwd.hpp"
 	"type_vec.hpp"
 	"_swizzle.hpp"
@@ -289,12 +263,12 @@
 	<cstddef>
 	"type_vec1.inl"
 
-1393332478 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec1.inl
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/type_vec1.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/exponential.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/exponential.hpp
 	"detail/func_exponential.hpp"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/detail/func_exponential.hpp
+1493572283 /home/darktong/work/testOpenGL2/include/glm/detail/func_exponential.hpp
 	"type_vec1.hpp"
 	"type_vec2.hpp"
 	"type_vec3.hpp"
@@ -302,31 +276,31 @@
 	<cmath>
 	"func_exponential.inl"
 
-1396373264 /home/darktong/work/testOpenGL2/include/glm/detail/func_exponential.inl
+1493572287 /home/darktong/work/testOpenGL2/include/glm/detail/func_exponential.inl
 	"func_vector_relational.hpp"
 	"_vectorize.hpp"
 	<limits>
 	<cassert>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_vector_relational.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/func_vector_relational.hpp
 	"precision.hpp"
 	"setup.hpp"
 	"func_vector_relational.inl"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_vector_relational.inl
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/func_vector_relational.inl
 	<limits>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/common.hpp
+1493572284 /home/darktong/work/testOpenGL2/include/glm/common.hpp
 	"detail/func_common.hpp"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/func_common.hpp
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/func_common.hpp
 	"setup.hpp"
 	"precision.hpp"
 	"type_int.hpp"
 	"_fixes.hpp"
 	"func_common.inl"
 
-1403266224 /home/darktong/work/testOpenGL2/include/glm/detail/func_common.inl
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/func_common.inl
 	"func_vector_relational.hpp"
 	"type_vec2.hpp"
 	"type_vec3.hpp"
@@ -334,15 +308,15 @@
 	"_vectorize.hpp"
 	<limits>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/packing.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/packing.hpp
 	"detail/func_packing.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_packing.hpp
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/func_packing.hpp
 	"type_vec2.hpp"
 	"type_vec4.hpp"
 	"func_packing.inl"
 
-1403266224 /home/darktong/work/testOpenGL2/include/glm/detail/func_packing.inl
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/func_packing.inl
 	"func_common.hpp"
 	"type_half.hpp"
 	"../fwd.hpp"
@@ -351,16 +325,16 @@
 	"setup.hpp"
 	"type_half.inl"
 
-1403266224 /home/darktong/work/testOpenGL2/include/glm/detail/type_half.inl
+1493572291 /home/darktong/work/testOpenGL2/include/glm/detail/type_half.inl
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/geometric.hpp
+1493572288 /home/darktong/work/testOpenGL2/include/glm/geometric.hpp
 	"detail/func_geometric.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_geometric.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/detail/func_geometric.hpp
 	"type_vec3.hpp"
 	"func_geometric.inl"
 
-1403266224 /home/darktong/work/testOpenGL2/include/glm/detail/func_geometric.inl
+1493572286 /home/darktong/work/testOpenGL2/include/glm/detail/func_geometric.inl
 	"func_exponential.hpp"
 	"func_common.hpp"
 	"type_vec2.hpp"
@@ -370,7 +344,7 @@
 1389458280 /home/darktong/work/testOpenGL2/include/glm/matrix.hpp
 	"detail/func_matrix.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_matrix.hpp
+1493572290 /home/darktong/work/testOpenGL2/include/glm/detail/func_matrix.hpp
 	"../detail/precision.hpp"
 	"../detail/setup.hpp"
 	"../detail/type_mat.hpp"
@@ -388,21 +362,21 @@
 	"../mat4x4.hpp"
 	"func_matrix.inl"
 
-1403339616 /home/darktong/work/testOpenGL2/include/glm/detail/func_matrix.inl
+1493572288 /home/darktong/work/testOpenGL2/include/glm/detail/func_matrix.inl
 	"../geometric.hpp"
 	<limits>
 
 1389458280 /home/darktong/work/testOpenGL2/include/glm/vector_relational.hpp
 	"detail/func_vector_relational.hpp"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/integer.hpp
+1493572291 /home/darktong/work/testOpenGL2/include/glm/integer.hpp
 	"detail/func_integer.hpp"
 
 1389458280 /home/darktong/work/testOpenGL2/include/glm/detail/func_integer.hpp
 	"setup.hpp"
 	"func_integer.inl"
 
-1396373264 /home/darktong/work/testOpenGL2/include/glm/detail/func_integer.inl
+1493572289 /home/darktong/work/testOpenGL2/include/glm/detail/func_integer.inl
 	"type_vec2.hpp"
 	"type_vec3.hpp"
 	"type_vec4.hpp"
@@ -411,7 +385,7 @@
 	<intrin.h>
 	<limits>
 
-1403335114 /home/darktong/work/testOpenGL2/include/glm/gtc/matrix_transform.hpp
+1493572290 /home/darktong/work/testOpenGL2/include/glm/gtc/matrix_transform.hpp
 	"../mat4x4.hpp"
 	"../vec2.hpp"
 	"../vec3.hpp"
@@ -419,14 +393,14 @@
 	"../gtc/constants.hpp"
 	"matrix_transform.inl"
 
-1393330394 /home/darktong/work/testOpenGL2/include/glm/gtc/constants.hpp
+1493572285 /home/darktong/work/testOpenGL2/include/glm/gtc/constants.hpp
 	"../detail/setup.hpp"
 	"constants.inl"
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/gtc/constants.inl
+1493572287 /home/darktong/work/testOpenGL2/include/glm/gtc/constants.inl
 	<limits>
 
-1403335114 /home/darktong/work/testOpenGL2/include/glm/gtc/matrix_transform.inl
+1493572284 /home/darktong/work/testOpenGL2/include/glm/gtc/matrix_transform.inl
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
@@ -448,7 +422,7 @@
 	<cstring>
 	"type_ptr.inl"
 
-1403280072 /home/darktong/work/testOpenGL2/include/glm/gtc/quaternion.hpp
+1493572288 /home/darktong/work/testOpenGL2/include/glm/gtc/quaternion.hpp
 	"../mat3x3.hpp"
 	"../mat4x4.hpp"
 	"../vec3.hpp"
@@ -456,16 +430,105 @@
 	"../gtc/constants.hpp"
 	"quaternion.inl"
 
-1403266224 /home/darktong/work/testOpenGL2/include/glm/gtc/quaternion.inl
+1493572286 /home/darktong/work/testOpenGL2/include/glm/gtc/quaternion.inl
 	"../trigonometric.hpp"
 	"../geometric.hpp"
 	"../exponential.hpp"
 	<limits>
 
-1389458280 /home/darktong/work/testOpenGL2/include/glm/gtc/type_ptr.inl
+1493572283 /home/darktong/work/testOpenGL2/include/glm/gtc/type_ptr.inl
 	<cstring>
 
-1493463466 /home/darktong/work/testOpenGL2/include/Camer.h
+1493572285 /home/darktong/work/testOpenGL2/include/glm/gtc/type_precision.hpp
+	"../gtc/quaternion.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../mat2x2.hpp"
+	"../mat2x3.hpp"
+	"../mat2x4.hpp"
+	"../mat3x2.hpp"
+	"../mat3x3.hpp"
+	"../mat3x4.hpp"
+	"../mat4x2.hpp"
+	"../mat4x3.hpp"
+	"../mat4x4.hpp"
+	"type_precision.inl"
+
+1493572291 /home/darktong/work/testOpenGL2/include/glm/gtc/type_precision.inl
+
+1493572287 /home/darktong/work/testOpenGL2/include/glm/gtc/random.hpp
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"random.inl"
+
+1493572282 /home/darktong/work/testOpenGL2/include/glm/gtc/random.inl
+	"../geometric.hpp"
+	"../exponential.hpp"
+	<cstdlib>
+	<ctime>
+	<cassert>
+
+1493572288 source:/home/darktong/work/testOpenGL2/include/glm/detail/glm.cpp
+	<glm/glm.hpp>
+	<glm/gtc/quaternion.hpp>
+	<glm/gtx/dual_quaternion.hpp>
+
+1493572289 /home/darktong/work/testOpenGL2/include/glm/gtx/dual_quaternion.hpp
+	"../glm.hpp"
+	"../gtc/constants.hpp"
+	"../gtc/quaternion.hpp"
+	"dual_quaternion.inl"
+
+1493572290 /home/darktong/work/testOpenGL2/include/glm/gtx/dual_quaternion.inl
+	"../geometric.hpp"
+	<limits>
+
+1493609127 source:/home/darktong/work/testOpenGL2/main.cpp
+	<iostream>
+	<cmath>
+	<string>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<SOIL.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"Shader.h"
+	"Camer.h"
+	"Model.h"
+
+1471498348 /usr/local/include/GLFW/glfw3.h
+	<stddef.h>
+	<stdint.h>
+	<OpenGL/gl3.h>
+	<OpenGL/gl3ext.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/glcorearb.h>
+	<GLES/gl.h>
+	<GLES/glext.h>
+	<GLES2/gl2.h>
+	<GLES2/gl2ext.h>
+	<GLES3/gl3.h>
+	<GLES2/gl2ext.h>
+	<GLES3/gl31.h>
+	<GLES2/gl2ext.h>
+	<vulkan/vulkan.h>
+	<GL/gl.h>
+	<GL/glext.h>
+	<GL/glu.h>
+
+1492878006 /usr/local/include/SOIL.h
+
+1493572290 /home/darktong/work/testOpenGL2/include/Shader.h
+	<string>
+	<fstream>
+	<sstream>
+	<iostream>
+	<GL/glew.h>
+
+1493608497 /home/darktong/work/testOpenGL2/include/Camer.h
 	<cmath>
 	<cstring>
 	<GL/glew.h>
@@ -476,6 +539,183 @@
 	<glm/gtc/type_ptr.hpp>
 	<Shader.h>
 
-1493463521 source:/home/darktong/work/testOpenGL2/src/Camer.cpp
+1493572286 /home/darktong/work/testOpenGL2/include/Model.h
+	<SOIL.h>
+	"Mesh.h"
+
+1493572290 /home/darktong/work/testOpenGL2/include/Mesh.h
+	<string>
+	<vector>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<glm/glm.hpp>
+	<glm/gtc/matrix_transform.hpp>
+	<glm/gtc/type_ptr.hpp>
+	<assimp/Importer.hpp>
+	<assimp/scene.h>
+	<assimp/postprocess.h>
+	"Shader.h"
+
+1467998991 /usr/local/include/assimp/Importer.hpp
+	"types.h"
+	"config.h"
+
+1467998991 /usr/local/include/assimp/types.h
+	<sys/types.h>
+	<math.h>
+	<stddef.h>
+	<string.h>
+	<limits.h>
+	"defs.h"
+	"vector3.h"
+	"vector2.h"
+	"color4.h"
+	"matrix3x3.h"
+	"matrix4x4.h"
+	"quaternion.h"
+	<cstring>
+	<new>
+	<string>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+	"vector2.inl"
+	"vector3.inl"
+	"color4.inl"
+	"quaternion.inl"
+	"matrix3x3.inl"
+	"matrix4x4.inl"
+
+1467998991 /usr/local/include/assimp/defs.h
+
+1467998991 /usr/local/include/assimp/vector3.h
+	<cmath>
+	<math.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/Compiler/pushpack1.h
+
+1467998991 /usr/local/include/assimp/Compiler/poppack1.h
+
+1467998991 /usr/local/include/assimp/vector2.h
+	<cmath>
+	<math.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/color4.h
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/matrix3x3.h
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/matrix4x4.h
+	"vector3.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/quaternion.h
+
+1467998991 /usr/local/include/assimp/vector2.inl
+	"vector2.h"
+	<cmath>
+
+1467998991 /usr/local/include/assimp/vector3.inl
+	"vector3.h"
+	<cmath>
+
+1467998991 /usr/local/include/assimp/color4.inl
+	"color4.h"
+
+1467998991 /usr/local/include/assimp/quaternion.inl
+	"quaternion.h"
+	<cmath>
+
+1467998991 /usr/local/include/assimp/matrix3x3.inl
+	"matrix3x3.h"
+	"matrix4x4.h"
+	<algorithm>
+	<cmath>
+	<limits>
+
+1467998991 /usr/local/include/assimp/matrix4x4.inl
+	"matrix4x4.h"
+	"matrix3x3.h"
+	"quaternion.h"
+	<algorithm>
+	<limits>
+	<cmath>
+
+1467998991 /usr/local/include/assimp/config.h
+
+1467998991 /usr/local/include/assimp/scene.h
+	"types.h"
+	"texture.h"
+	"mesh.h"
+	"light.h"
+	"camera.h"
+	"material.h"
+	"anim.h"
+	"metadata.h"
+
+1467998991 /usr/local/include/assimp/texture.h
+	"types.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1467998991 /usr/local/include/assimp/mesh.h
+	"types.h"
+
+1467998991 /usr/local/include/assimp/light.h
+	"types.h"
+
+1467998991 /usr/local/include/assimp/camera.h
+	"types.h"
+
+1467998991 /usr/local/include/assimp/material.h
+	"types.h"
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+	"material.inl"
+
+1467998991 /usr/local/include/assimp/material.inl
+
+1467998991 /usr/local/include/assimp/anim.h
+	"types.h"
+	"quaternion.h"
+
+1467998991 /usr/local/include/assimp/metadata.h
+	<assert.h>
+	"Compiler/pstdint.h"
+	<limits.h>
+	<stdint.h>
+	<string>
+
+1467998991 /usr/local/include/assimp/Compiler/pstdint.h
+	<stddef.h>
+	<limits.h>
+	<signal.h>
+	<stdint.h>
+	<sys/inttypes.h>
+	<wchar.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1467998991 /usr/local/include/assimp/postprocess.h
+	"types.h"
+
+1493608476 source:/home/darktong/work/testOpenGL2/src/Camer.cpp
 	"Camer.h"
+
+1493572290 source:/home/darktong/work/testOpenGL2/src/Mesh.cpp
+	"Mesh.h"
+
+1493569614 source:/home/darktong/work/testOpenGL2/src/Model.cpp
+	"Model.h"
+
+1493572287 source:/home/darktong/work/testOpenGL2/src/Shader.cpp
+	"Shader.h"
 

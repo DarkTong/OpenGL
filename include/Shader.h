@@ -10,19 +10,19 @@
 
 class Shader
 {
-    public:
-        // 程序ID
-        GLint Program;
+public:
+    // 程序ID
+    GLint Program;
 
-        // 构造器读取并构造着色器
-        Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-        // 析构函数
-        virtual ~Shader();
-        // 使用程序
-        void Use();
-    protected:
+    // 构造器读取并构造着色器
+    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    // 析构函数
+    virtual ~Shader();
+    // 使用程序
+    void Use();
+protected:
 
-    private:
+private:
 };
 
 #endif // SHADER_H

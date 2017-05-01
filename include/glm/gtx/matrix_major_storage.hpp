@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,9 +30,9 @@
 ///
 /// @defgroup gtx_matrix_major_storage GLM_GTX_matrix_major_storage
 /// @ingroup gtx
-/// 
+///
 /// @brief Build matrices with specific matrix order, row or column
-/// 
+///
 /// <glm/gtx/matrix_major_storage.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -48,94 +48,94 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_matrix_major_storage
-	/// @{
+/// @addtogroup gtx_matrix_major_storage
+/// @{
 
-	//! Build a row major matrix from row vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat2x2<T, P> rowMajor2(
-		detail::tvec2<T, P> const & v1, 
-		detail::tvec2<T, P> const & v2);
-		
-	//! Build a row major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat2x2<T, P> rowMajor2(
-		detail::tmat2x2<T, P> const & m);
+//! Build a row major matrix from row vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat2x2<T, P> rowMajor2(
+    detail::tvec2<T, P> const & v1,
+    detail::tvec2<T, P> const & v2);
 
-	//! Build a row major matrix from row vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat3x3<T, P> rowMajor3(
-		detail::tvec3<T, P> const & v1, 
-		detail::tvec3<T, P> const & v2, 
-		detail::tvec3<T, P> const & v3);
+//! Build a row major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat2x2<T, P> rowMajor2(
+    detail::tmat2x2<T, P> const & m);
 
-	//! Build a row major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat3x3<T, P> rowMajor3(
-		detail::tmat3x3<T, P> const & m);
+//! Build a row major matrix from row vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat3x3<T, P> rowMajor3(
+    detail::tvec3<T, P> const & v1,
+    detail::tvec3<T, P> const & v2,
+    detail::tvec3<T, P> const & v3);
 
-	//! Build a row major matrix from row vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> rowMajor4(
-		detail::tvec4<T, P> const & v1, 
-		detail::tvec4<T, P> const & v2,
-		detail::tvec4<T, P> const & v3, 
-		detail::tvec4<T, P> const & v4);
+//! Build a row major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat3x3<T, P> rowMajor3(
+    detail::tmat3x3<T, P> const & m);
 
-	//! Build a row major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> rowMajor4(
-		detail::tmat4x4<T, P> const & m);
+//! Build a row major matrix from row vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> rowMajor4(
+    detail::tvec4<T, P> const & v1,
+    detail::tvec4<T, P> const & v2,
+    detail::tvec4<T, P> const & v3,
+    detail::tvec4<T, P> const & v4);
 
-	//! Build a column major matrix from column vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat2x2<T, P> colMajor2(
-		detail::tvec2<T, P> const & v1, 
-		detail::tvec2<T, P> const & v2);
-		
-	//! Build a column major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat2x2<T, P> colMajor2(
-		detail::tmat2x2<T, P> const & m);
+//! Build a row major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> rowMajor4(
+    detail::tmat4x4<T, P> const & m);
 
-	//! Build a column major matrix from column vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat3x3<T, P> colMajor3(
-		detail::tvec3<T, P> const & v1, 
-		detail::tvec3<T, P> const & v2, 
-		detail::tvec3<T, P> const & v3);
-		
-	//! Build a column major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat3x3<T, P> colMajor3(
-		detail::tmat3x3<T, P> const & m);
-		
-	//! Build a column major matrix from column vectors.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> colMajor4(
-		detail::tvec4<T, P> const & v1, 
-		detail::tvec4<T, P> const & v2, 
-		detail::tvec4<T, P> const & v3, 
-		detail::tvec4<T, P> const & v4);
-				
-	//! Build a column major matrix from other matrix.
-	//! From GLM_GTX_matrix_major_storage extension.
-	template <typename T, precision P> 
-	GLM_FUNC_DECL detail::tmat4x4<T, P> colMajor4(
-		detail::tmat4x4<T, P> const & m);
+//! Build a column major matrix from column vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat2x2<T, P> colMajor2(
+    detail::tvec2<T, P> const & v1,
+    detail::tvec2<T, P> const & v2);
 
-	/// @}
+//! Build a column major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat2x2<T, P> colMajor2(
+    detail::tmat2x2<T, P> const & m);
+
+//! Build a column major matrix from column vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat3x3<T, P> colMajor3(
+    detail::tvec3<T, P> const & v1,
+    detail::tvec3<T, P> const & v2,
+    detail::tvec3<T, P> const & v3);
+
+//! Build a column major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat3x3<T, P> colMajor3(
+    detail::tmat3x3<T, P> const & m);
+
+//! Build a column major matrix from column vectors.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> colMajor4(
+    detail::tvec4<T, P> const & v1,
+    detail::tvec4<T, P> const & v2,
+    detail::tvec4<T, P> const & v3,
+    detail::tvec4<T, P> const & v4);
+
+//! Build a column major matrix from other matrix.
+//! From GLM_GTX_matrix_major_storage extension.
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> colMajor4(
+    detail::tmat4x4<T, P> const & m);
+
+/// @}
 }//namespace glm
 
 #include "matrix_major_storage.inl"

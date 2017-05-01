@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,9 +29,9 @@
 ///
 /// @defgroup gtx_wrap GLM_GTX_wrap
 /// @ingroup gtx
-/// 
+///
 /// @brief Wrapping mode of texture coordinates.
-/// 
+///
 /// <glm/gtx/wrap.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -47,25 +47,25 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_wrap
-	/// @{
+/// @addtogroup gtx_wrap
+/// @{
 
-	/// Simulate GL_CLAMP OpenGL wrap mode
-	/// @see gtx_wrap extension.
-	template <typename genType> 
-	GLM_FUNC_DECL genType clamp(genType const & Texcoord);
+/// Simulate GL_CLAMP OpenGL wrap mode
+/// @see gtx_wrap extension.
+template <typename genType>
+GLM_FUNC_DECL genType clamp(genType const & Texcoord);
 
-	/// Simulate GL_REPEAT OpenGL wrap mode
-	/// @see gtx_wrap extension.
-	template <typename genType> 
-	GLM_FUNC_DECL genType repeat(genType const & Texcoord);
+/// Simulate GL_REPEAT OpenGL wrap mode
+/// @see gtx_wrap extension.
+template <typename genType>
+GLM_FUNC_DECL genType repeat(genType const & Texcoord);
 
-	/// Simulate GL_MIRROR_REPEAT OpenGL wrap mode
-	/// @see gtx_wrap extension.
-	template <typename genType> 
-	GLM_FUNC_DECL genType mirrorRepeat(genType const & Texcoord);
+/// Simulate GL_MIRROR_REPEAT OpenGL wrap mode
+/// @see gtx_wrap extension.
+template <typename genType>
+GLM_FUNC_DECL genType mirrorRepeat(genType const & Texcoord);
 
-	/// @}
+/// @}
 }// namespace glm
 
 #include "wrap.inl"

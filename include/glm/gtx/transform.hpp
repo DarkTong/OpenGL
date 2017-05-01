@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,11 +34,11 @@
 /// @ingroup gtx
 ///
 /// @brief Add transformation matrices
-/// 
+///
 /// <glm/gtx/transform.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GLM_GTX_transform 
+#ifndef GLM_GTX_transform
 #define GLM_GTX_transform
 
 // Dependency:
@@ -51,32 +51,32 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_transform
-	/// @{
+/// @addtogroup gtx_transform
+/// @{
 
-	/// Transforms a matrix with a translation 4 * 4 matrix created from 3 scalars. 
-	/// - From \link gtx_transform GLM_GTX_transform \endlink extension
-	/// - See also: \link glm::translate GLM_GTC_matrix_transform \endlink
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> translate(
-		detail::tvec3<T, P> const & v);
+/// Transforms a matrix with a translation 4 * 4 matrix created from 3 scalars.
+/// - From \link gtx_transform GLM_GTX_transform \endlink extension
+/// - See also: \link glm::translate GLM_GTC_matrix_transform \endlink
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> translate(
+    detail::tvec3<T, P> const & v);
 
-	/// Builds a rotation 4 * 4 matrix created from an axis of 3 scalars and an angle expressed in degrees. 
-	/// - From \link gtx_transform GLM_GTX_transform \endlink extension
-	/// - See also: \link glm::rotate GLM_GTC_matrix_transform \endlink
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> rotate(
-		T angle, 
-		detail::tvec3<T, P> const & v);
+/// Builds a rotation 4 * 4 matrix created from an axis of 3 scalars and an angle expressed in degrees.
+/// - From \link gtx_transform GLM_GTX_transform \endlink extension
+/// - See also: \link glm::rotate GLM_GTC_matrix_transform \endlink
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> rotate(
+    T angle,
+    detail::tvec3<T, P> const & v);
 
-	/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
-	/// - From \link gtx_transform GLM_GTX_transform \endlink extension
-	/// - See also: \link glm::scale GLM_GTC_matrix_transform \endlink
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> scale(
-		detail::tvec3<T, P> const & v);
+/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
+/// - From \link gtx_transform GLM_GTX_transform \endlink extension
+/// - See also: \link glm::scale GLM_GTC_matrix_transform \endlink
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> scale(
+    detail::tvec3<T, P> const & v);
 
-	/// @}
+/// @}
 }// namespace glm
 
 #include "transform.inl"

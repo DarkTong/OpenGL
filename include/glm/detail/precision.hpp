@@ -31,13 +31,13 @@
 
 namespace glm
 {
-	enum precision
-	{
-		highp,
-		mediump,
-		lowp,
-		defaultp = highp
-	};
+enum precision
+{
+    highp,
+    mediump,
+    lowp,
+    defaultp = highp
+};
 }//namespace glm
 
 #endif//GLM_CORE_PRECISION_INCLUDED

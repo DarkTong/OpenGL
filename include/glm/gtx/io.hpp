@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@
 ///
 /// @defgroup gtx_io GLM_GTX_io
 /// @ingroup gtx
-/// 
+///
 /// @brief std::[w]ostream support for glm types
 ///
 ///        std::[w]ostream support for glm types + precision/width/etc. manipulators
@@ -57,168 +57,169 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_io
-	/// @{
+/// @addtogroup gtx_io
+/// @{
 
-	namespace io
-	{
-		enum order_type { column_major, row_major};
+namespace io
+{
+enum order_type { column_major, row_major};
 
-		template <typename CTy>
-		class format_punct : public std::locale::facet
-		{
-			typedef CTy char_type;
+template <typename CTy>
+class format_punct : public std::locale::facet
+{
+    typedef CTy char_type;
 
-		public:
+public:
 
-			static std::locale::id id;
+    static std::locale::id id;
 
-			bool       formatted;
-			unsigned   precision;
-			unsigned   width;
-			char_type  separator;
-			char_type  delim_left;
-			char_type  delim_right;
-			char_type  space;
-			char_type  newline;
-			order_type order;
+    bool       formatted;
+    unsigned   precision;
+    unsigned   width;
+    char_type  separator;
+    char_type  delim_left;
+    char_type  delim_right;
+    char_type  space;
+    char_type  newline;
+    order_type order;
 
-			explicit format_punct(size_t a = 0);
-			explicit format_punct(format_punct const&);
-		};
+    explicit format_punct(size_t a = 0);
+    explicit format_punct(format_punct const&);
+};
 
-		template <typename CTy, typename CTr = std::char_traits<CTy> >
-		class basic_state_saver {
+template <typename CTy, typename CTr = std::char_traits<CTy> >
+class basic_state_saver
+{
 
-		public:
+public:
 
-			explicit basic_state_saver(std::basic_ios<CTy,CTr>&);
-					~basic_state_saver();
+    explicit basic_state_saver(std::basic_ios<CTy,CTr>&);
+    ~basic_state_saver();
 
-		private:
+private:
 
-			typedef ::std::basic_ios<CTy,CTr>      state_type;
-			typedef typename state_type::char_type char_type;
-			typedef ::std::ios_base::fmtflags      flags_type;
-			typedef ::std::streamsize              streamsize_type;
-			typedef ::std::locale const            locale_type;
+    typedef ::std::basic_ios<CTy,CTr>      state_type;
+    typedef typename state_type::char_type char_type;
+    typedef ::std::ios_base::fmtflags      flags_type;
+    typedef ::std::streamsize              streamsize_type;
+    typedef ::std::locale const            locale_type;
 
-			state_type&     state_;
-			flags_type      flags_;
-			streamsize_type precision_;
-			streamsize_type width_;
-			char_type       fill_;
-			locale_type     locale_;
+    state_type&     state_;
+    flags_type      flags_;
+    streamsize_type precision_;
+    streamsize_type width_;
+    char_type       fill_;
+    locale_type     locale_;
 
-			basic_state_saver& operator=(basic_state_saver const&);
-		};
+    basic_state_saver& operator=(basic_state_saver const&);
+};
 
-		typedef basic_state_saver<char>     state_saver;
-		typedef basic_state_saver<wchar_t> wstate_saver;
+typedef basic_state_saver<char>     state_saver;
+typedef basic_state_saver<wchar_t> wstate_saver;
 
-		template <typename CTy, typename CTr = std::char_traits<CTy> >
-		class basic_format_saver
-		{
-		public:
+template <typename CTy, typename CTr = std::char_traits<CTy> >
+class basic_format_saver
+{
+public:
 
-			explicit basic_format_saver(std::basic_ios<CTy,CTr>&);
-					~basic_format_saver();
+    explicit basic_format_saver(std::basic_ios<CTy,CTr>&);
+    ~basic_format_saver();
 
-		private:
+private:
 
-			basic_state_saver<CTy> const bss_;
+    basic_state_saver<CTy> const bss_;
 
-			basic_format_saver& operator=(basic_format_saver const&);
-		};
+    basic_format_saver& operator=(basic_format_saver const&);
+};
 
-		typedef basic_format_saver<char>     format_saver;
-		typedef basic_format_saver<wchar_t> wformat_saver;
+typedef basic_format_saver<char>     format_saver;
+typedef basic_format_saver<wchar_t> wformat_saver;
 
-		struct precision
-		{
-			unsigned value;
+struct precision
+{
+    unsigned value;
 
-			explicit precision(unsigned);
-		};
+    explicit precision(unsigned);
+};
 
-		struct width
-		{
-			unsigned value;
+struct width
+{
+    unsigned value;
 
-			explicit width(unsigned);
-		};
+    explicit width(unsigned);
+};
 
-		template <typename CTy>
-		struct delimeter
-		{
-			CTy value[3];
+template <typename CTy>
+struct delimeter
+{
+    CTy value[3];
 
-			explicit delimeter(CTy /* left */, CTy /* right */, CTy /* separator */ = ',');
-		};
+    explicit delimeter(CTy /* left */, CTy /* right */, CTy /* separator */ = ',');
+};
 
-		struct order
-		{
-			order_type value;
+struct order
+{
+    order_type value;
 
-			explicit order(order_type);
-		};
+    explicit order(order_type);
+};
 
-		// functions, inlined (inline)
+// functions, inlined (inline)
 
-		template <typename FTy, typename CTy, typename CTr>
-		FTy const& get_facet(std::basic_ios<CTy,CTr>&);
-		template <typename FTy, typename CTy, typename CTr>
-		std::basic_ios<CTy,CTr>& formatted(std::basic_ios<CTy,CTr>&);
-		template <typename FTy, typename CTy, typename CTr>
-		std::basic_ios<CTy,CTr>& unformattet(std::basic_ios<CTy,CTr>&);
+template <typename FTy, typename CTy, typename CTr>
+FTy const& get_facet(std::basic_ios<CTy,CTr>&);
+template <typename FTy, typename CTy, typename CTr>
+std::basic_ios<CTy,CTr>& formatted(std::basic_ios<CTy,CTr>&);
+template <typename FTy, typename CTy, typename CTr>
+std::basic_ios<CTy,CTr>& unformattet(std::basic_ios<CTy,CTr>&);
 
-		template <typename CTy, typename CTr>
-		std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, precision const&);
-		template <typename CTy, typename CTr>
-		std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, width const&);
-		template <typename CTy, typename CTr>
-		std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, delimeter<CTy> const&);
-		template <typename CTy, typename CTr>
-		std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, order const&);
-	}//namespace io
+template <typename CTy, typename CTr>
+std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, precision const&);
+template <typename CTy, typename CTr>
+std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, width const&);
+template <typename CTy, typename CTr>
+std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, delimeter<CTy> const&);
+template <typename CTy, typename CTr>
+std::basic_ostream<CTy, CTr>& operator<<(std::basic_ostream<CTy, CTr>&, order const&);
+}//namespace io
 
-	namespace detail
-	{
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tquat<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec2<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec3<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec4<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x2<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x3<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x4<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x2<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x3<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x4<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x2<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x3<T,P> const&);
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x4<T,P> const&);
+namespace detail
+{
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tquat<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec2<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec3<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tvec4<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x2<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x3<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat2x4<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x2<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x3<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat3x4<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x2<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x3<T,P> const&);
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr>& operator<<(std::basic_ostream<CTy,CTr>&, tmat4x4<T,P> const&);
 
-		template <typename CTy, typename CTr, typename T, precision P>
-		GLM_FUNC_DECL std::basic_ostream<CTy,CTr> & operator<<(
-			std::basic_ostream<CTy,CTr> &,
-			std::pair<tmat4x4<T,P> const,
-			tmat4x4<T,P> const> const &);
-	}//namespace detail
+template <typename CTy, typename CTr, typename T, precision P>
+GLM_FUNC_DECL std::basic_ostream<CTy,CTr> & operator<<(
+    std::basic_ostream<CTy,CTr> &,
+    std::pair<tmat4x4<T,P> const,
+    tmat4x4<T,P> const> const &);
+}//namespace detail
 
-	/// @}
+/// @}
 }//namespace glm
 
 #include "io.inl"

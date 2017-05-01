@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,12 +28,12 @@
 /// @see core (dependence)
 /// @see gtc_matrix_transform
 /// @see gtc_quaternion
-/// 
+///
 /// @defgroup gtx_rotate_normalized_axis GLM_GTX_rotate_normalized_axis
 /// @ingroup gtc
-/// 
+///
 /// @brief Quaternions and matrices rotations around normalized axis.
-/// 
+///
 /// <glm/gtx/rotate_normalized_axis.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -51,40 +51,40 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_rotate_normalized_axis
-	/// @{
+/// @addtogroup gtx_rotate_normalized_axis
+/// @{
 
-	/// Builds a rotation 4 * 4 matrix created from a normalized axis and an angle. 
-	/// 
-	/// @param m Input matrix multiplied by this rotation matrix.
-	/// @param angle Rotation angle expressed in radians if GLM_FORCE_RADIANS is define or degrees otherwise.
-	/// @param axis Rotation axis, must be normalized.
-	/// @tparam T Value type used to build the matrix. Currently supported: half (not recommanded), float or double.
-	/// 
-	/// @see gtx_rotate_normalized_axis
-	/// @see - rotate(T angle, T x, T y, T z) 
-	/// @see - rotate(detail::tmat4x4<T, P> const & m, T angle, T x, T y, T z) 
-	/// @see - rotate(T angle, detail::tvec3<T, P> const & v) 
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tmat4x4<T, P> rotateNormalizedAxis(
-		detail::tmat4x4<T, P> const & m,
-		T const & angle,
-		detail::tvec3<T, P> const & axis);
+/// Builds a rotation 4 * 4 matrix created from a normalized axis and an angle.
+///
+/// @param m Input matrix multiplied by this rotation matrix.
+/// @param angle Rotation angle expressed in radians if GLM_FORCE_RADIANS is define or degrees otherwise.
+/// @param axis Rotation axis, must be normalized.
+/// @tparam T Value type used to build the matrix. Currently supported: half (not recommanded), float or double.
+///
+/// @see gtx_rotate_normalized_axis
+/// @see - rotate(T angle, T x, T y, T z)
+/// @see - rotate(detail::tmat4x4<T, P> const & m, T angle, T x, T y, T z)
+/// @see - rotate(T angle, detail::tvec3<T, P> const & v)
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tmat4x4<T, P> rotateNormalizedAxis(
+    detail::tmat4x4<T, P> const & m,
+    T const & angle,
+    detail::tvec3<T, P> const & axis);
 
-	/// Rotates a quaternion from a vector of 3 components normalized axis and an angle.
-	/// 
-	/// @param q Source orientation
-	/// @param angle Angle expressed in radians if GLM_FORCE_RADIANS is define or degrees otherwise.
-	/// @param axis Normalized axis of the rotation, must be normalized.
-	/// 
-	/// @see gtx_rotate_normalized_axis
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tquat<T, P> rotateNormalizedAxis(
-		detail::tquat<T, P> const & q,
-		T const & angle,
-		detail::tvec3<T, P> const & axis);
+/// Rotates a quaternion from a vector of 3 components normalized axis and an angle.
+///
+/// @param q Source orientation
+/// @param angle Angle expressed in radians if GLM_FORCE_RADIANS is define or degrees otherwise.
+/// @param axis Normalized axis of the rotation, must be normalized.
+///
+/// @see gtx_rotate_normalized_axis
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tquat<T, P> rotateNormalizedAxis(
+    detail::tquat<T, P> const & q,
+    T const & angle,
+    detail::tvec3<T, P> const & axis);
 
-	/// @}
+/// @}
 }//namespace glm
 
 #include "rotate_normalized_axis.inl"

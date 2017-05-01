@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,9 +29,9 @@
 ///
 /// @defgroup gtx_extend GLM_GTX_scalar_relational
 /// @ingroup gtx
-/// 
+///
 /// @brief Extend a position from a source to a position at a defined length.
-/// 
+///
 /// <glm/gtx/scalar_relational.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -47,12 +47,12 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_scalar_relational
-	/// @{
+/// @addtogroup gtx_scalar_relational
+/// @{
 
 
 
-	/// @}
+/// @}
 }//namespace glm
 
 #include "scalar_relational.inl"

@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,72 +31,78 @@
 
 namespace glm
 {
-	enum profile
-	{
-		nice,
-		fast,
-		simd
-	};
+enum profile
+{
+    nice,
+    fast,
+    simd
+};
 
-	typedef std::size_t sizeType;
-	
+typedef std::size_t sizeType;
+
 namespace detail
 {
-	template
-	<
-		typename VALTYPE, 
-		template <typename> class TYPE
-	>
-	struct genType
-	{
-	public:
-		enum ctor{null};
+template
+<
+    typename VALTYPE,
+    template <typename> class TYPE
+    >
+struct genType
+{
+public:
+    enum ctor {null};
 
-		typedef VALTYPE value_type;
-		typedef VALTYPE & value_reference;
-		typedef VALTYPE * value_pointer;
-		typedef VALTYPE const * value_const_pointer;
-		typedef TYPE<bool> bool_type;
+    typedef VALTYPE value_type;
+    typedef VALTYPE & value_reference;
+    typedef VALTYPE * value_pointer;
+    typedef VALTYPE const * value_const_pointer;
+    typedef TYPE<bool> bool_type;
 
-		typedef sizeType size_type;
-		static bool is_vector();
-		static bool is_matrix();
-		
-		typedef TYPE<VALTYPE> type;
-		typedef TYPE<VALTYPE> * pointer;
-		typedef TYPE<VALTYPE> const * const_pointer;
-		typedef TYPE<VALTYPE> const * const const_pointer_const;
-		typedef TYPE<VALTYPE> * const pointer_const;
-		typedef TYPE<VALTYPE> & reference;
-		typedef TYPE<VALTYPE> const & const_reference;
-		typedef TYPE<VALTYPE> const & param_type;
+    typedef sizeType size_type;
+    static bool is_vector();
+    static bool is_matrix();
 
-		//////////////////////////////////////
-		// Address (Implementation details)
+    typedef TYPE<VALTYPE> type;
+    typedef TYPE<VALTYPE> * pointer;
+    typedef TYPE<VALTYPE> const * const_pointer;
+    typedef TYPE<VALTYPE> const * const const_pointer_const;
+    typedef TYPE<VALTYPE> * const pointer_const;
+    typedef TYPE<VALTYPE> & reference;
+    typedef TYPE<VALTYPE> const & const_reference;
+    typedef TYPE<VALTYPE> const & param_type;
 
-		value_const_pointer value_address() const{return value_pointer(this);}
-		value_pointer value_address(){return value_pointer(this);}
+    //////////////////////////////////////
+    // Address (Implementation details)
 
-	//protected:
-	//	enum kind
-	//	{
-	//		GEN_TYPE,
-	//		VEC_TYPE,
-	//		MAT_TYPE
-	//	};
+    value_const_pointer value_address() const
+    {
+        return value_pointer(this);
+    }
+    value_pointer value_address()
+    {
+        return value_pointer(this);
+    }
 
-	//	typedef typename TYPE::kind kind;
-	};
+    //protected:
+    //	enum kind
+    //	{
+    //		GEN_TYPE,
+    //		VEC_TYPE,
+    //		MAT_TYPE
+    //	};
 
-	template
-	<
-		typename VALTYPE, 
-		template <typename> class TYPE
-	>
-	bool genType<VALTYPE, TYPE>::is_vector()
-	{
-		return true;
-	}
+    //	typedef typename TYPE::kind kind;
+};
+
+template
+<
+    typename VALTYPE,
+    template <typename> class TYPE
+    >
+bool genType<VALTYPE, TYPE>::is_vector()
+{
+    return true;
+}
 /*
 	template <typename valTypeT, unsigned int colT, unsigned int rowT, profile proT = nice>
 	class base
@@ -123,8 +129,8 @@ namespace detail
 		static bool									is_matrix();
 
 	private:
-		// Data 
-		col_type value[colT];		
+		// Data
+		col_type value[colT];
 
 	public:
 		//////////////////////////////////////
@@ -161,60 +167,60 @@ namespace detail
 		class_type& operator-- ();
 	};
 */
-	
-	//template <typename T>
-	//struct traits
-	//{
-	//	static const bool is_signed = false;
-	//	static const bool is_float = false;
-	//	static const bool is_vector = false;
-	//	static const bool is_matrix = false;
-	//	static const bool is_genType = false;
-	//	static const bool is_genIType = false;
-	//	static const bool is_genUType = false;
-	//};
-	
-	//template <>
-	//struct traits<half>
-	//{
-	//	static const bool is_float = true;
-	//	static const bool is_genType = true;
-	//};
-	
-	//template <>
-	//struct traits<float>
-	//{
-	//	static const bool is_float = true;
-	//	static const bool is_genType = true;
-	//};
-	
-	//template <>
-	//struct traits<double>
-	//{
-	//	static const bool is_float = true;
-	//	static const bool is_genType = true;
-	//};
-	
-	//template <typename genType>
-	//struct desc
-	//{
-	//	typedef genType							type;
-	//	typedef genType *						pointer;
-	//	typedef genType const*					const_pointer;
-	//	typedef genType const *const			const_pointer_const;
-	//	typedef genType *const					pointer_const;
-	//	typedef genType &						reference;
-	//	typedef genType const&					const_reference;
-	//	typedef genType const&					param_type;
-	
-	//	typedef typename genType::value_type	value_type;
-	//	typedef typename genType::size_type		size_type;
-	//	static const typename size_type			value_size;
-	//};
-	
-	//template <typename genType>
-	//const typename desc<genType>::size_type desc<genType>::value_size = genType::value_size();
-	
+
+//template <typename T>
+//struct traits
+//{
+//	static const bool is_signed = false;
+//	static const bool is_float = false;
+//	static const bool is_vector = false;
+//	static const bool is_matrix = false;
+//	static const bool is_genType = false;
+//	static const bool is_genIType = false;
+//	static const bool is_genUType = false;
+//};
+
+//template <>
+//struct traits<half>
+//{
+//	static const bool is_float = true;
+//	static const bool is_genType = true;
+//};
+
+//template <>
+//struct traits<float>
+//{
+//	static const bool is_float = true;
+//	static const bool is_genType = true;
+//};
+
+//template <>
+//struct traits<double>
+//{
+//	static const bool is_float = true;
+//	static const bool is_genType = true;
+//};
+
+//template <typename genType>
+//struct desc
+//{
+//	typedef genType							type;
+//	typedef genType *						pointer;
+//	typedef genType const*					const_pointer;
+//	typedef genType const *const			const_pointer_const;
+//	typedef genType *const					pointer_const;
+//	typedef genType &						reference;
+//	typedef genType const&					const_reference;
+//	typedef genType const&					param_type;
+
+//	typedef typename genType::value_type	value_type;
+//	typedef typename genType::size_type		size_type;
+//	static const typename size_type			value_size;
+//};
+
+//template <typename genType>
+//const typename desc<genType>::size_type desc<genType>::value_size = genType::value_size();
+
 }//namespace detail
 }//namespace glm
 

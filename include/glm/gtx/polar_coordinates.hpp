@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,9 +29,9 @@
 ///
 /// @defgroup gtx_polar_coordinates GLM_GTX_polar_coordinates
 /// @ingroup gtx
-/// 
+///
 /// @brief Conversion from Euclidean space to polar space and revert.
-/// 
+///
 /// <glm/gtx/polar_coordinates.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -47,24 +47,24 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_polar_coordinates
-	/// @{
+/// @addtogroup gtx_polar_coordinates
+/// @{
 
-	/// Convert Euclidean to Polar coordinates, x is the xz distance, y, the latitude and z the longitude.
-	///
-	/// @see gtx_polar_coordinates
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tvec3<T, P> polar(
-		detail::tvec3<T, P> const & euclidean);
+/// Convert Euclidean to Polar coordinates, x is the xz distance, y, the latitude and z the longitude.
+///
+/// @see gtx_polar_coordinates
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tvec3<T, P> polar(
+    detail::tvec3<T, P> const & euclidean);
 
-	/// Convert Polar to Euclidean coordinates.
-	///
-	/// @see gtx_polar_coordinates
-	template <typename T, precision P>
-	GLM_FUNC_DECL detail::tvec3<T, P> euclidean(
-		detail::tvec2<T, P> const & polar);
+/// Convert Polar to Euclidean coordinates.
+///
+/// @see gtx_polar_coordinates
+template <typename T, precision P>
+GLM_FUNC_DECL detail::tvec3<T, P> euclidean(
+    detail::tvec2<T, P> const & polar);
 
-	/// @}
+/// @}
 }//namespace glm
 
 #include "polar_coordinates.inl"

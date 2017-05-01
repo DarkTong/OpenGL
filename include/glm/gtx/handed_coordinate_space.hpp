@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,9 +29,9 @@
 ///
 /// @defgroup gtx_handed_coordinate_space GLM_GTX_handed_coordinate_space
 /// @ingroup gtx
-/// 
+///
 /// @brief To know if a set of three basis vectors defines a right or left-handed coordinate system.
-/// 
+///
 /// <glm/gtx/handed_coordinate_system.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -47,26 +47,26 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_handed_coordinate_space
-	/// @{
+/// @addtogroup gtx_handed_coordinate_space
+/// @{
 
-	//! Return if a trihedron right handed or not.
-	//! From GLM_GTX_handed_coordinate_space extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL bool rightHanded(
-		detail::tvec3<T, P> const & tangent,
-		detail::tvec3<T, P> const & binormal,
-		detail::tvec3<T, P> const & normal);
+//! Return if a trihedron right handed or not.
+//! From GLM_GTX_handed_coordinate_space extension.
+template <typename T, precision P>
+GLM_FUNC_DECL bool rightHanded(
+    detail::tvec3<T, P> const & tangent,
+    detail::tvec3<T, P> const & binormal,
+    detail::tvec3<T, P> const & normal);
 
-	//! Return if a trihedron left handed or not.
-	//! From GLM_GTX_handed_coordinate_space extension.
-	template <typename T, precision P>
-	GLM_FUNC_DECL bool leftHanded(
-		detail::tvec3<T, P> const & tangent,
-		detail::tvec3<T, P> const & binormal,
-		detail::tvec3<T, P> const & normal);
+//! Return if a trihedron left handed or not.
+//! From GLM_GTX_handed_coordinate_space extension.
+template <typename T, precision P>
+GLM_FUNC_DECL bool leftHanded(
+    detail::tvec3<T, P> const & tangent,
+    detail::tvec3<T, P> const & binormal,
+    detail::tvec3<T, P> const & normal);
 
-	/// @}
+/// @}
 }// namespace glm
 
 #include "handed_coordinate_space.inl"

@@ -8,10 +8,10 @@
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-/// 
+///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-/// 
+///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@
 ///
 /// @defgroup gtx_std_based_type GLM_GTX_std_based_type
 /// @ingroup gtx
-/// 
+///
 /// @brief Adds vector types based on STL value types.
 /// <glm/gtx/std_based_type.hpp> need to be included to use these functionalities.
 ///////////////////////////////////////////////////////////////////////////////////
@@ -48,34 +48,34 @@
 
 namespace glm
 {
-	/// @addtogroup gtx_std_based_type
-	/// @{
-	
-	/// Vector type based of two std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec2<std::size_t, defaultp>		size2;
-	
-	/// Vector type based of three std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec3<std::size_t, defaultp>		size3;
+/// @addtogroup gtx_std_based_type
+/// @{
 
-	/// Vector type based of four std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec4<std::size_t, defaultp>		size4;
+/// Vector type based of two std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec2<std::size_t, defaultp>		size2;
 
-	/// Vector type based of two std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec2<std::size_t, defaultp>		size2_t;
-	
-	/// Vector type based of three std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec3<std::size_t, defaultp>		size3_t;
-	
-	/// Vector type based of four std::size_t components.
-	/// @see GLM_GTX_std_based_type
-	typedef detail::tvec4<std::size_t, defaultp>		size4_t;
+/// Vector type based of three std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec3<std::size_t, defaultp>		size3;
 
-	/// @}
+/// Vector type based of four std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec4<std::size_t, defaultp>		size4;
+
+/// Vector type based of two std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec2<std::size_t, defaultp>		size2_t;
+
+/// Vector type based of three std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec3<std::size_t, defaultp>		size3_t;
+
+/// Vector type based of four std::size_t components.
+/// @see GLM_GTX_std_based_type
+typedef detail::tvec4<std::size_t, defaultp>		size4_t;
+
+/// @}
 }//namespace glm
 
 #include "std_based_type.inl"
