@@ -42,9 +42,13 @@ glm::mat4 uniM4;
 glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 // 缓冲对象
-GLuint blockVAO, blockVBO, planeVAO, planeVBO, grassVBO, grassVAO;
+GLuint blockVAO, blockVBO, planeVAO, planeVBO, blockPlaneVAO, blockPlaneVBO;
 // 纹理对象
-GLuint blockTexture, planeTexture, grassTexture;
+GLuint blockTexture, planeTexture, blockPlaneTexture;
+// 渲染对象
+GLuint RBO;
+// 帧对象
+GLuint frameBuffer;
 
 // cube
 GLfloat blockVertices[] = {
@@ -119,6 +123,19 @@ GLfloat grassVertices[] = {
 };
 int grassPointNum = 6*5;
 
+// 四边形坐标
+GLfloat blockPlaneVertices[] = {
+    // Positions        // TexCoords
+    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+
+    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f, 1.0f, 1.0f
+};
+int blockPlaneNum = 6*5;
+
 // block位置
 glm::vec3 blockPosition[] = {
     glm::vec3(-1.0, 0.0, -1.0),
@@ -137,8 +154,7 @@ vector<glm::vec3> grassPosition;
 GLuint grassNum = 4;
 
 // 光源位置
-glm::vec3 pointLightPositions[] =
-{
+glm::vec3 pointLightPositions[] = {
     glm::vec3( 0.7f,  0.2f,  2.0f),
     glm::vec3( 2.3f, -3.3f, -4.0f),
     glm::vec3(-4.0f,  2.0f, -12.0f),
@@ -158,7 +174,8 @@ void key_callback(GLFWwindow *, GLint,  GLint, GLint, GLint);
 void mouse_callback(GLFWwindow *, double, double);
 void scroll_callback(GLFWwindow *, double, double);
 void BindVBOAndVAO(GLuint &VBO, GLuint &VAO, GLfloat* vertices, int pointNum);
-void BindTexture(GLuint &texture, const char* path);
+GLuint BindTexture(const char* path, int alpha = 0);
+GLuint generateAttachmentTexture(GLboolean depth = GL_FALSE, GLboolean stencil = GL_FALSE);
 //void DrawContainers(int flag, Shader &shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
 void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm::vec3> &mArray);
 
@@ -181,32 +198,59 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.fs");
-    Shader planeShader("./shader/vecS/plane.vs", "./shader/fs/plane.fs");
-    Shader grassShader("./shader/vecS/grass.vs", "./shader/fs/grass.fs");
-    Shader colorShader("./shader/vecS/lightColor.vs", "./shader/fs/lightColor.fs");
+    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
+    Shader planeShader("./shader/vecS/plane.vs", "./shader/fs/plane.frag");
+    Shader blockPlaneShader("./shader/vecS/blockPlane.vs", "./shader/fs/blockPlane.frag");
 
     /* 创建模块 */
     //Model nanosite("./model/nanosuit/nanosuit.obj");
 
-
     /* bind block */
     BindVBOAndVAO(blockVBO, blockVAO, blockVertices, blockPointNum);
-
     /* plane */
     BindVBOAndVAO(planeVBO, planeVAO, planeVertices, planePointNum);
-
-    /* gress */
-    BindVBOAndVAO(grassVBO, grassVAO, grassVertices, grassPointNum);
-
+    /* blockPlaneBlock */
+    BindVBOAndVAO(blockPlaneVBO, blockPlaneVAO, blockPlaneVertices, blockPlaneNum);
     /* blockTexture */
-    BindTexture(blockTexture, "./texture/block.jpg");
-
+    blockTexture = BindTexture("./texture/container.jpg");
     /* planeTexture */
-    BindTexture(planeTexture, "./texture/plane.jpg");
+    planeTexture = BindTexture("./texture/plane.jpg");
 
-    /* grassTexture */
-    BindTexture(grassTexture, "./texture/blending_transparent_window.png");
+    /* frameBuffer */
+    // 获取帧对象
+    glGenFramebuffers(1, &frameBuffer);
+    // -绑定帧对象
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    // -获取纹理对象
+    glGenTextures(1, &blockPlaneTexture);
+    // --绑定纹理对象
+    glBindTexture(GL_TEXTURE_2D, blockPlaneTexture);
+    // --为纹理对象申请内存空间
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    // --设置参数
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // --解绑纹理对象
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // -把纹理对象写进帧
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, blockPlaneTexture, 0);
+    // -获取渲染对象
+    glGenRenderbuffers(1, &RBO);
+    // --绑定渲染对象
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    // --为渲染对象申请内存空间
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT);
+    // --解绑渲染对象
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    // -把渲染对象写进帧
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+    // -判断帧是够成功构造
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    // 解绑帧对象
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
@@ -216,12 +260,6 @@ int main()
         // 摄影机移动
         doCamerMovement();
 
-        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
-        glClearColor(red, green, bule, 0.01f);
-        // 清除颜色缓存，清除深度缓存
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        //changeRGB();
-
         // 模块空间
         glm::mat4 model;
         // 构造观察空间
@@ -229,21 +267,19 @@ int main()
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
 
+        /* PASS 1 */
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        // 开启深度测试
+        glEnable(GL_DEPTH_TEST);
+        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        // 清除颜色缓存，清除深度缓存
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         /* normalblock */
-        /* 开启面剔除模式 */
-        glEnable(GL_CULL_FACE);
-        // 剔除方块的前面
-        glCullFace(GL_FRONT);
-        // 剔除前面顺时针渲染的面
-        // GL_CCW 表示逆时针，GL_CW 表示顺时针
-        // glFrontFace(); 表示把GLCCW或GL_CW当成是正面
-        glFrontFace(GL_CW);
         blockShader.Use();
         glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         // 纹理
-        glActiveTexture(GL_TEXTURE0);
-        glUniform1i(glGetUniformLocation(blockShader.Program, "texture_diffuse1"), 0);
         glBindTexture(GL_TEXTURE_2D, blockTexture);
         for(GLuint i = 0; i < blockNum; ++i)
         {
@@ -254,16 +290,12 @@ int main()
             glBindVertexArray(0);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
-        /* 关闭面剔除模式 */
-        glDisable(GL_CULL_FACE);
 
         /* plane */
         planeShader.Use();
         glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         // 纹理
-        glActiveTexture(GL_TEXTURE1);
-        glUniform1i(glGetUniformLocation(planeShader.Program, "texture_diffuse1"), 1);
         glBindTexture(GL_TEXTURE_2D, planeTexture);
         for(GLuint i = 0; i < planeNum; ++i)
         {
@@ -274,33 +306,33 @@ int main()
             glBindVertexArray(0);
         }
         glBindTexture(GL_TEXTURE_2D, 0);
+        // 关闭深度测试
+        glDisable(GL_DEPTH_TEST);
+        // -解绑帧对象--把帧对象换成屏幕的(0)
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        /* grass */
-        map<GLfloat, int> hasSortPos;
-        sortPosition(hasSortPos, camer.camerPos, grassPosition);
-        grassShader.Use();
-        glUniformMatrix4fv(glGetUniformLocation(grassShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(grassShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        // 纹理
-        glActiveTexture(GL_TEXTURE2);
-        glUniform1i(glGetUniformLocation(grassShader.Program, "texture_diffuse1"), 2);
-        glBindTexture(GL_TEXTURE_2D, grassTexture);
-        //for(GLuint i = 0; i < grassNum; ++i)
-        for(map<GLfloat, int>::reverse_iterator it = hasSortPos.rbegin(); it != hasSortPos.rend(); ++it)
-        {
-            //model = glm::translate(uniM4, grassPosition[i]);
-            model = glm::translate(uniM4, grassPosition[it->second]);
-            glUniformMatrix4fv(glGetUniformLocation(grassShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-            glBindVertexArray(grassVAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-        }
-        glBindTexture(GL_TEXTURE_2D, 0);
+
+        /* PASS 2 */
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        // 清除颜色缓存，清除深度缓存
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // blockPlane
+        blockPlaneShader.Use();
+        glBindVertexArray(blockPlaneVAO);
+        glBindTexture(GL_TEXTURE_2D, blockPlaneTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
 
     }
+    glDeleteFramebuffers(1, &frameBuffer);
     // 结束后正确释放之前分配的所有资源
     glfwTerminate();
     return 0;
@@ -357,19 +389,19 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     glfwSetScrollCallback(window, scroll_callback);
 
     // 设置鼠标隐藏并且不能移除窗口
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
 
     /* 开启模式检测 */
     //glEnable(GL_STENCIL_TEST);
     //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     /* 开启混合模式 */
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     return true;
 }
@@ -455,22 +487,52 @@ void BindVBOAndVAO(GLuint &VBO, GLuint &VAO, GLfloat* vertices, int pointNum)
 }
 
 // 绑定纹理
-void BindTexture(GLuint &texture, const char* path)
+GLuint BindTexture(const char* path, int alpha)
 {
     unsigned char* image;
     int width, height;
+    GLuint texture;
+    GLenum type = alpha ? GL_RGBA : GL_RGB;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGBA);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+    image = SOIL_load_image(path, &width, &height, 0, alpha ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
+    // 申请内存空间，并写入image数据
+    glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, image);
+    // 多级纹理
     glGenerateMipmap(GL_TEXTURE_2D);
     // 设置纹理属性
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
     SOIL_free_image_data(image);
+    return texture;
+}
+
+// 纹理附件
+GLuint generateAttachmentTexture(GLboolean depth, GLboolean stencil)
+{
+    GLuint texture;
+    GLenum attachmentType;
+    // 设置type
+    if(!depth && ! stencil)
+        attachmentType = GL_RGB;
+    else if(depth && !stencil)
+        attachmentType = GL_DEPTH_COMPONENT;
+    else if(!depth && stencil)
+        attachmentType = GL_STENCIL_INDEX;
+    // 常规操作
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    if(!depth && !stencil)
+        glTexImage2D(GL_TEXTURE_2D, 0, attachmentType, WIDTH, HEIGHT, 0, attachmentType, GL_UNSIGNED_BYTE, NULL);
+    else // 特殊格式
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, WIDTH, HEIGHT, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return texture;
 }
 
 // 按与摄像机的距离进行排序
