@@ -89,7 +89,7 @@ private:
     // fps摄像机
     void forFPS()
     {
-        camerPos.y = POS.y;
+        //camerPos.y = POS.y;
     }
 };
 
