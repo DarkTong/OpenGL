@@ -26,7 +26,7 @@
 //using namespace std;
 
 // Window dimensions
-const GLuint WIDTH = 1200, HEIGHT = 800;
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 // 颜色参数
 //double red=0.2, green=0.3, bule=0.5;
@@ -43,6 +43,7 @@ glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 // 缓冲对象
 GLuint blockVAO, blockVBO, planeVAO, planeVBO, blockPlaneVAO, blockPlaneVBO;
+GLuint backGlassVAO, backGlassVBO;
 // 纹理对象
 GLuint blockTexture, planeTexture, blockPlaneTexture;
 // 渲染对象
@@ -136,6 +137,18 @@ GLfloat blockPlaneVertices[] = {
 };
 int blockPlaneNum = 6*5;
 
+// 后视镜坐标
+GLfloat backGlassVertices[] = {
+    -0.4, 1.0, 1.0, 0.0, 1.0,
+    -0.4, 0.3, 1.0, 0.0, 0.0,
+    0.4, 0.3, 1.0, 1.0, 0.0,
+
+    -0.4, 1.0, 1.0, 0.0, 1.0,
+    0.4, 0.3, 1.0, 1.0, 0.0,
+    0.4, 1.0, 1.0, 1.0, 1.0,
+};
+int backGlassNum = 6*5;
+
 // block位置
 glm::vec3 blockPosition[] = {
     glm::vec3(-1.0, 0.0, -1.0),
@@ -161,6 +174,26 @@ glm::vec3 pointLightPositions[] = {
     glm::vec3( 0.0f,  0.0f, -3.0f)
 };
 
+struct DrawPara
+{
+    glm::mat4 projection;
+    glm::mat4 view;
+    glm::vec3* position;
+    GLuint posNum, poiNum, shaderProgramId, textureID, VAOID;
+    DrawPara(glm::mat4 Pro, glm::mat4 Vi, glm::vec3* Pos,
+             GLuint PosN, GLuint PoiN, GLuint SPI, GLuint TI, GLuint VI)
+             {
+                 projection = Pro;
+                 view = Vi;
+                 position = Pos;
+                 posNum = PosN;
+                 poiNum = PoiN;
+                 shaderProgramId = SPI;
+                 textureID = TI;
+                 VAOID = VI;
+             }
+};
+
 /* 创建摄影机对象 */
 Camer camer((float)WIDTH, (float)HEIGHT,
         glm::vec3(0.0, 0.0, 1.0));
@@ -178,6 +211,7 @@ GLuint BindTexture(const char* path, int alpha = 0);
 GLuint generateAttachmentTexture(GLboolean depth = GL_FALSE, GLboolean stencil = GL_FALSE);
 //void DrawContainers(int flag, Shader &shader, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
 void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm::vec3> &mArray);
+void DrawTriangle(const DrawPara data);
 
 int main()
 {
@@ -211,6 +245,8 @@ int main()
     BindVBOAndVAO(planeVBO, planeVAO, planeVertices, planePointNum);
     /* blockPlaneBlock */
     BindVBOAndVAO(blockPlaneVBO, blockPlaneVAO, blockPlaneVertices, blockPlaneNum);
+    /* back */
+    BindVBOAndVAO(backGlassVBO, backGlassVAO, backGlassVertices, backGlassNum);
     /* blockTexture */
     blockTexture = BindTexture("./texture/container.jpg");
     /* planeTexture */
@@ -277,40 +313,19 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         /* normalblock */
         blockShader.Use();
-        glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        // 纹理
-        glBindTexture(GL_TEXTURE_2D, blockTexture);
-        for(GLuint i = 0; i < blockNum; ++i)
-        {
-            model = glm::translate(uniM4, blockPosition[i]);
-            glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-            glBindVertexArray(blockVAO);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
-        }
-        glBindTexture(GL_TEXTURE_2D, 0);
+        DrawPara data(projection, view, blockPosition, blockNum,
+                      36, blockShader.Program, blockTexture, blockVAO);
+        DrawTriangle(data);
 
         /* plane */
         planeShader.Use();
-        glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        // 纹理
-        glBindTexture(GL_TEXTURE_2D, planeTexture);
-        for(GLuint i = 0; i < planeNum; ++i)
-        {
-            model = glm::translate(uniM4, grassPosition[i]);
-            glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-            glBindVertexArray(planeVAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-        }
-        glBindTexture(GL_TEXTURE_2D, 0);
+        data = DrawPara(projection, view, planePosition, planeNum,
+                      6, planeShader.Program, planeTexture, planeVAO);
+        DrawTriangle(data);
         // 关闭深度测试
         glDisable(GL_DEPTH_TEST);
         // -解绑帧对象--把帧对象换成屏幕的(0)
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
         /* PASS 2 */
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -325,8 +340,44 @@ int main()
         glBindTexture(GL_TEXTURE_2D, blockPlaneTexture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        /* PASS 3 */
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        // 开启深度测试
+        glEnable(GL_DEPTH_TEST);
+        // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        // 清除颜色缓存，清除深度缓存
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        /* normalblock */
+        view = glm::lookAt(camer.camerPos, camer.camerPos - camer.camerFront, camer.worldUp);
+        blockShader.Use();
+        data = DrawPara(projection, view, blockPosition, blockNum,
+                      36, blockShader.Program, blockTexture, blockVAO);
+        DrawTriangle(data);
+
+        /* plane */
+        planeShader.Use();
+        data = DrawPara(projection, view, planePosition, planeNum,
+                      6, planeShader.Program, planeTexture, planeVAO);
+        DrawTriangle(data);
+        // 关闭深度测试
+        glDisable(GL_DEPTH_TEST);
+        // -解绑帧对象--把帧对象换成屏幕的(0)
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        view = glm::lookAt(camer.camerPos, camer.camerPos - camer.camerFront, camer.worldUp);
+
+        /* PASS 4 */
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // blockPlane
+        blockPlaneShader.Use();
+        glBindVertexArray(backGlassVAO);
+        glBindTexture(GL_TEXTURE_2D, blockPlaneTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
@@ -544,3 +595,23 @@ void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm:
         hasSortPos[distance] = i;
     }
 }
+
+// 三角形渲染
+void DrawTriangle(const DrawPara data)
+{
+    glUniformMatrix4fv(glGetUniformLocation(data.shaderProgramId, "projection"), 1, GL_FALSE, glm::value_ptr(data.projection));
+    glUniformMatrix4fv(glGetUniformLocation(data.shaderProgramId, "view"), 1, GL_FALSE, glm::value_ptr(data.view));
+    // 纹理
+    glBindTexture(GL_TEXTURE_2D, data.textureID);
+    for(GLuint i = 0; i < data.posNum; ++i)
+    {
+        glm::mat4 model = glm::mat4(0.0);
+        model = glm::translate(uniM4, data.position[i]);
+        glUniformMatrix4fv(glGetUniformLocation(data.shaderProgramId, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glBindVertexArray(data.VAOID);
+        glDrawArrays(GL_TRIANGLES, 0, data.poiNum);
+        glBindVertexArray(0);
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
