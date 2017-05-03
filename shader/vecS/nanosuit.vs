@@ -8,14 +8,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-//out vec3 Normal;
+out vec3 Normal;
 out vec2 TexCoords;
-out vec3 Color;
+out vec3 Position;
 
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);
-    //Normal = normal;
+    Normal = normalize(transpose(inverse(mat3(view * model)))*normal);
     TexCoords = texCoords;
-    Color = position;
-}
+    Position = position;
+} 

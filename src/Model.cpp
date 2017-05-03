@@ -102,6 +102,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vector<Texture> specularMaps = this->loadMaterialTextures(material,
                                             aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        vector<Texture> reflectionMaps = this->loadMaterialTextures(material,
+                                            aiTextureType_AMBIENT, "texture_reflection");
+        textures.insert(textures.end(), reflectionMaps.begin(), reflectionMaps.end());
     }
 
     return Mesh(vertices, textures, indices);
@@ -121,8 +124,8 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
             if(std::strcmp(this->texturesLoads[j].path.C_Str(), str.C_Str()) == 0)
             {
                 textures.push_back(this->texturesLoads[j]);
-             //   skip = GL_TRUE;
-             //   break;
+                skip = GL_TRUE;
+                break;
             }
         }
         if(skip == GL_FALSE)

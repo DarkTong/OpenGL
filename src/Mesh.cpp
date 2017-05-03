@@ -83,6 +83,7 @@ void Mesh::Draw(Shader shader)
      */
     GLuint diffuseNr = 1;
     GLuint specularNr = 1;
+    GLuint reflectionNr = 1;
     // 绑定纹理单元
     for(GLuint i=0; i<this->textures.size(); ++i)
     {
@@ -94,6 +95,8 @@ void Mesh::Draw(Shader shader)
             idx = std::__cxx11::to_string(diffuseNr++);
         else if(name == "texture_specular")
             idx = std::__cxx11::to_string(specularNr++);
+        else if(name == "texture_reflection")
+            idx = std::__cxx11::to_string(reflectionNr++);
         // 赋值
         glUniform1i(glGetUniformLocation(shader.Program, (name+idx).c_str()), i);
         // 绑定
@@ -114,6 +117,7 @@ void Mesh::Draw(Shader shader)
         glActiveTexture(GL_TEXTURE0+i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    glActiveTexture(GL_TEXTURE0);
 }
 
 

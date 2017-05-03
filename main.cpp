@@ -29,8 +29,8 @@
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 // 颜色参数
-//double red=0.2, green=0.3, bule=0.5;
-double red=0.1, green=0.1, bule=0.1;
+double red=1.0, green=1.0, bule=1;
+//double red=0.1, green=0.1, bule=0.1;
 
 // 按键记录
 GLboolean keyF[1024]= {0};
@@ -49,94 +49,95 @@ GLuint blockTexture, skyboxTexture;
 
 // block Position
 GLfloat blockVertices[] = {
-    // Back face
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    // Front face
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-    // Left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    // Right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-    // Bottom face
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-    // Top face
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
+    // Positions          // Normals
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
-int blockPointNum = 36*5;
+int blockPointNum = 36*6;
 
 // cube Position
 GLfloat cubeVertices[] = {
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
-    -1.0f, -1.0f, -1.0f, 0.0, 0.0,
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
-     1.0f,  1.0f, -1.0f, 0.0, 0.0,
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
+    // Positions
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
 
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
-    -1.0f, -1.0f, -1.0f, 0.0, 0.0,
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
-    -1.0f,  1.0f,  1.0f, 0.0, 0.0,
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
 
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
-     1.0f, -1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f, -1.0f, 0.0, 0.0,
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
 
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
-    -1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f, -1.0f,  1.0f, 0.0, 0.0,
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
 
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
-     1.0f,  1.0f, -1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-     1.0f,  1.0f,  1.0f, 0.0, 0.0,
-    -1.0f,  1.0f,  1.0f, 0.0, 0.0,
-    -1.0f,  1.0f, -1.0f, 0.0, 0.0,
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
 
-    -1.0f, -1.0f, -1.0f, 0.0, 0.0,
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
-     1.0f, -1.0f, -1.0f, 0.0, 0.0,
-    -1.0f, -1.0f,  1.0f, 0.0, 0.0,
-     1.0f, -1.0f,  1.0f, 0.0, 0.0,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f
 };
 int cubePointNum = 36*5;
 
@@ -199,13 +200,35 @@ int main()
     /* 1.创建顶点着色器和线段着色器 */
     Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
     Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
+    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag");
 
-    /* skybox */
-    BindVBOAndVAO(blockVBO, blockVAO, blockVertices, blockPointNum);
-    BindVBOAndVAO(skyboxVBO, skyboxVAO, blockVertices, cubePointNum);
+    Model nanosuit("./model/nanosuit_reflection/nanosuit.obj");
+
+    // block
+    glGenBuffers(1, &blockVBO);
+    glGenVertexArrays(1, &blockVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, blockVBO);
+    glBindVertexArray(blockVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof blockVertices, blockVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+    // skybox
+    glGenBuffers(1, &skyboxVBO);
+    glGenVertexArrays(1, &skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof cubeVertices, cubeVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+    //BindVBOAndVAO(skyboxVBO, skyboxVAO, cubeVertices, cubePointNum);
 
     /* skyboxTexture */
-    blockTexture = BindTexture("./texture/container.jpg");
+    //blockTexture = BindTexture("./texture/container.jpg");
     skyboxTexture = BindCubeTexture("./texture/cube/skybox/");
 
     /* 画图（渲染）*/
@@ -219,7 +242,7 @@ int main()
         // 开启深度测试
         glEnable(GL_DEPTH_TEST);
         // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(red, green, bule, 1.0f);
         // 清除颜色缓存，清除深度缓存
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -232,8 +255,31 @@ int main()
 
         // block
         blockShader.Use();
-        DrawPara data(projection, view, blockPosition, blockNum, blockPointNum, blockShader.Program, blockTexture, blockVAO);
-        DrawTriangle(data);
+        glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform3f(glGetUniformLocation(blockShader.Program, "camerPos"), camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glBindVertexArray(blockVAO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+        model = uniM4;
+        model = glm::translate(model, glm::vec3(blockPosition[0]));
+        glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+        // nanosuit
+        nanosuitShader.Use();
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+        glUniform1i(glGetUniformLocation(nanosuitShader.Program, "texture_skybox"), 3);
+        glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        model = uniM4;
+        model = glm::translate(model, glm::vec3(blockPosition[1]));
+        model = glm::scale(model, glm::vec3(0.2));
+        glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        nanosuit.Draw(nanosuitShader);
+        glActiveTexture(GL_TEXTURE0);
 
         // skybox
         glDepthFunc(GL_LEQUAL);
@@ -241,11 +287,14 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(glm::mat4(glm::mat3(view))));
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+        model = uniM4;
         glUniformMatrix4fv(glGetUniformLocation(skyboxShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        glActiveTexture(GL_TEXTURE0);
         glDepthFunc(GL_LESS);
 
         // 交换缓存，增强视觉效果
@@ -384,7 +433,7 @@ void doCamerMovement()
     {
         camer.doCamerMovement(UP, curTime);
     }
-    if(keyF[GLFW_KEY_LEFT_SHIFT] == GLFW_TRUE)
+    if(keyF[GLFW_KEY_C] == GLFW_TRUE)
     {
         camer.doCamerMovement(DOWN, curTime);
     }
