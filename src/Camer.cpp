@@ -55,7 +55,6 @@ void Camer::updateCamer()
 
     // 更新摄影机向量
     this->camerFront = glm::normalize(ffront);
-    glm::vec3 tmp = glm::cross(this->camerFront, this->worldUp);
     this->camerRight = glm::normalize(glm::cross(this->camerFront, this->worldUp));
     this->camerUp = glm::normalize(glm::cross(this->camerRight, this->camerFront));
     //this->camerRight = glm::normalize(glm::cross(this->worldUp, this->camerFront));

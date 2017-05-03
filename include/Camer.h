@@ -74,8 +74,6 @@ public:
     void doScrollMovement(GLfloat, GLfloat);
     // 获取观察空间
     glm::mat4 getViewMartix();
-    // 更新摄像数据
-    void updateCamer();
 
 protected:
 
@@ -87,6 +85,7 @@ private:
     // 鼠标位置
     GLfloat mouseCurPosX, mouseCurPosY, mouseLastPosX, mouseLastPosY;
     // 更新摄像机参数
+    void updateCamer();
     // fps摄像机
     void forFPS()
     {
