@@ -44,53 +44,54 @@ glm::vec3 lightColor(1.0, 1.0, 1.0);
 // 缓冲对象
 GLuint blockVAO, blockVBO;
 GLuint skyboxVBO, skyboxVAO;
+GLuint testSizeVAO, testSizeVBO;
 // 纹理对象
 GLuint blockTexture, skyboxTexture;
+GLint containerTexture, awesomefaceTexture;
 
 // block Position
 GLfloat blockVertices[] = {
-    // Positions          // Normals
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+    // Front face
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+    // Left face
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+    // Right face
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+    // Bottom face
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+    // Top face
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
 };
 int blockPointNum = 36*6;
 
@@ -143,10 +144,12 @@ int cubePointNum = 36*5;
 
 // block位置
 glm::vec3 blockPosition[] = {
-    glm::vec3(-1.0, 0.0, -1.0),
-    glm::vec3(2.0, 0.0, 0.0),
+    glm::vec3(-0.6, -0.6, -1.0),
+    glm::vec3(-0.6, 0.6, -1.0),
+    glm::vec3(0.6, 0.6, -1.0),
+    glm::vec3(0.6, -0.6, -1.0),
 };
-GLuint blockNum = 2;
+GLuint blockNum = 4;
 
 struct DrawPara
 {
@@ -198,12 +201,10 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
-    Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
-    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag");
-
+    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/RBG.frag");
+    /*
+    // nanosuit
     Model nanosuit("./model/nanosuit_reflection/nanosuit.obj");
-
     // block
     glGenBuffers(1, &blockVBO);
     glGenVertexArrays(1, &blockVAO);
@@ -224,12 +225,31 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
-
     //BindVBOAndVAO(skyboxVBO, skyboxVAO, cubeVertices, cubePointNum);
+    */
+    glGenBuffers(1, &blockVBO);
+    glGenVertexArrays(1, &blockVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, blockVBO);
+    glBindVertexArray(blockVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(blockVertices), blockVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+    glBindVertexArray(0);
 
     /* skyboxTexture */
-    //blockTexture = BindTexture("./texture/container.jpg");
-    skyboxTexture = BindCubeTexture("./texture/cube/skybox/");
+    //containerTexture = BindTexture("./texture/container.jpg", 1);
+    //awesomefaceTexture = BindTexture("./texture/awesomeface.png", 1);
+
+    // uniform内存
+    GLuint uboMatrices;
+    glGenBuffers(1, &uboMatrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 3*sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // 用于指定哪块uniformBlock绑定哪段内存，并且为uniformBlock绑定标号(0)
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 3*sizeof(glm::mat4));
 
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
@@ -252,7 +272,7 @@ int main()
         glm::mat4 view = camer.getViewMartix();
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
-
+/*
         // block
         blockShader.Use();
         glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -296,6 +316,29 @@ int main()
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         glActiveTexture(GL_TEXTURE0);
         glDepthFunc(GL_LESS);
+*/
+
+        // block
+        // 绑定着色器中uniform结构体的位置(0)
+        glUniformBlockBinding(blockShader.Program,
+                              glGetUniformBlockIndex(blockShader.Program, "Matrices"), 0);
+
+        blockShader.Use();
+        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glBindVertexArray(blockVAO);
+        for(GLuint i = 0;i < blockNum; ++i)
+        {
+            model = glm::translate(uniM4, blockPosition[i]);
+            glUniform1i(glGetUniformLocation(blockShader.Program, "flag"), i);
+            glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+            glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(model));
+            glBindBuffer(GL_UNIFORM_BUFFER, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        glBindVertexArray(0);
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
@@ -354,10 +397,10 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     // 注册鼠标回调函数，根据用户的鼠标移动做出相应的处理
     glfwSetCursorPosCallback(window, mouse_callback);
     // 注册鼠标滚轮回调函数，根据用户滚轮做出缩放处理
-    glfwSetScrollCallback(window, scroll_callback);
+    //glfwSetScrollCallback(window, scroll_callback);
 
     // 设置鼠标隐藏并且不能移除窗口
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
@@ -460,17 +503,17 @@ GLuint BindTexture(const char* path, int alpha)
     unsigned char* image;
     int width, height;
     GLuint texture;
-    GLenum type = alpha ? GL_RGBA : GL_RGB;
+    GLenum type = alpha ? GL_RGB : GL_RGBA;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    image = SOIL_load_image(path, &width, &height, 0, alpha ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
+    image = SOIL_load_image(path, &width, &height, 0, alpha ? SOIL_LOAD_RGB : SOIL_LOAD_RGBA);
     // 申请内存空间，并写入image数据
     glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, image);
     // 多级纹理
     glGenerateMipmap(GL_TEXTURE_2D);
     // 设置纹理属性
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_MIRRORED_REPEAT : GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, alpha ? GL_MIRRORED_REPEAT: GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
