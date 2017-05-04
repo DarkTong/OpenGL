@@ -14,12 +14,14 @@ layout(std140) uniform Matrices
 out VS_OUT
 {
     vec2 TexCoords;
+    vec3 Normal;
 }vs_out;
 
 //out vec2 TexCoords;
 void main()
 {
     vs_out.TexCoords = texCoords;
+    vs_out.Normal = normal;
     gl_Position = projection * view * model * vec4(position, 1.0f);
     //gl_Position = vec4(position, 1.0f);
     //vs_out.Normal = normalize(transpose(inverse(mat3(view * model)))*normal);

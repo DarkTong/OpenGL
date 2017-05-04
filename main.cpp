@@ -211,7 +211,8 @@ int main()
     /* 1.创建顶点着色器和线段着色器 */
     //Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
     //Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
-    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag", "./shader/geom/nanosuit.geom");
+    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag", "./shader/geom/nothing.geom");
+    Shader nanosuitShader1("./shader/vecS/nanosuit.vs", "./shader/fs/normalColor.frag", "./shader/geom/nanosuit.geom");
     Shader blockShader("./shader/vecS/block.vs", "./shader/fs/RBG.frag", "./shader/geom/test.geom");
     Shader pointShader("./shader/vecS/points.vs", "./shader/fs/points.frag", "./shader/geom/test.geom");
 
@@ -281,6 +282,8 @@ int main()
         nanosuitShader.Use();
         glUniformBlockBinding(nanosuitShader.Program,
                               glGetUniformBlockIndex(nanosuitShader.Program, "Matrices"), 0);
+        glUniformBlockBinding(nanosuitShader1.Program,
+                              glGetUniformBlockIndex(nanosuitShader1.Program, "Matrices"), 0);
         //glActiveTexture(GL_TEXTURE3);
         //glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
         //glUniform1i(glGetUniformLocation(nanosuitShader.Program, "texture_skybox"), 3);
@@ -296,6 +299,7 @@ int main()
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         nanosuit.Draw(nanosuitShader);
+        nanosuit.Draw(nanosuitShader1);
         glActiveTexture(GL_TEXTURE0);
 
         // code block
