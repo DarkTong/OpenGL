@@ -35,6 +35,7 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
         gShaderStream << gShaderFile.rdbuf();
         gShaderFile.close();
         geometryCode = gShaderStream.str();
+
     }
     catch(std::ifstream::failure e)
     {
@@ -89,7 +90,7 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
     this->Program = glCreateProgram();
     glAttachShader(this->Program, vertex);
     glAttachShader(this->Program, fragment);
-    //glAttachShader(this->Program, geometry);
+    glAttachShader(this->Program, geometry);
     glLinkProgram(this->Program);
     // 打印链接错误
     glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
