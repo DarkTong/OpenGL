@@ -15,7 +15,7 @@ public:
     GLint Program;
 
     // 构造器读取并构造着色器
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar* geometryPath);
     // 析构函数
     virtual ~Shader();
     // 使用程序

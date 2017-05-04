@@ -198,9 +198,9 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
-    Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
-    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag");
+    //Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
+    //Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
+    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag", "./shader/geom/nanosuit.geom");
 
     Model nanosuit("./model/nanosuit_reflection/nanosuit.obj");
 
@@ -252,7 +252,7 @@ int main()
         glm::mat4 view = camer.getViewMartix();
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
-
+/*
         // block
         blockShader.Use();
         glUniformMatrix4fv(glGetUniformLocation(blockShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -266,7 +266,7 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
+*/
         // nanosuit
         nanosuitShader.Use();
         glActiveTexture(GL_TEXTURE3);
@@ -280,7 +280,7 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         nanosuit.Draw(nanosuitShader);
         glActiveTexture(GL_TEXTURE0);
-
+/*
         // skybox
         glDepthFunc(GL_LEQUAL);
         skyboxShader.Use();
@@ -296,6 +296,7 @@ int main()
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         glActiveTexture(GL_TEXTURE0);
         glDepthFunc(GL_LESS);
+*/
 
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);

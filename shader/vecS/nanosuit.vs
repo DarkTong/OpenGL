@@ -14,7 +14,8 @@ out vec3 Position;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+    //gl_Position = projection * view * model * vec4(position, 1.0f);
+    gl_Position = vec4(position, 1.0);
     Normal = normalize(transpose(inverse(mat3(view * model)))*normal);
     TexCoords = texCoords;
     Position = position;
