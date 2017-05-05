@@ -43,105 +43,26 @@ glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 // 缓冲对象
 GLuint blockVAO, blockVBO;
-GLuint skyboxVBO, skyboxVAO;
-GLuint testSizeVAO, testSizeVBO;
-GLuint pointVAO,pointVBO;
+GLuint quaVAO, quaVBO;
 // 纹理对象
 GLuint blockTexture, skyboxTexture;
 GLint containerTexture, awesomefaceTexture;
+// uniform对象
+GLuint uboMatrices, uboOffset;
+// 实例化数组缓冲对象
+GLuint instanceVBO;
 
-// block Position
-GLfloat blockVertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    // Front face
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-    // Left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
-    // Right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
-    // Bottom face
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
-    // Top face
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left
+// quadrilateral
+GLfloat quadVertices[] = {
+    //  ---位置---   ------颜色-------
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
 };
-int blockPointNum = 36*6;
-
-// cube Position
-GLfloat cubeVertices[] = {
-    // Positions
-    -1.0f,  1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-    -1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f
-};
-int cubePointNum = 36*5;
 
 // block位置
 glm::vec3 blockPosition[] = {
@@ -152,12 +73,8 @@ glm::vec3 blockPosition[] = {
 };
 GLuint blockNum = 4;
 
-GLfloat points[] = {
-    -0.5, -0.5, 0.0, 1.0, 1.0, 0.0,
-    0.5, -0.5, 0.0, 0.0, 0.0, 1.0,
-    0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
-    -0.5, 0.5, 0.0, 1.0, 0.0, 0.0,
-};
+// offset position
+glm::vec2 quadOffsetP[100];
 
 struct DrawPara
 {
@@ -198,6 +115,9 @@ GLuint generateAttachmentTexture(GLboolean depth = GL_FALSE, GLboolean stencil =
 void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm::vec3> &mArray);
 void DrawTriangle(const DrawPara data);
 
+/* temp */
+void GetOffsetPosition(glm::vec2* offsetPosition);
+
 int main()
 {
     /* 初始化环境 */
@@ -209,47 +129,58 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    //Shader blockShader("./shader/vecS/block.vs", "./shader/fs/block.frag");
-    //Shader skyboxShader("./shader/vecS/skybox.vs", "./shader/fs/skybox.frag");
-    Shader nanosuitShader("./shader/vecS/nanosuit.vs", "./shader/fs/nanosuit.frag", "./shader/geom/nothing.geom");
-    Shader nanosuitShader1("./shader/vecS/nanosuit.vs", "./shader/fs/normalColor.frag", "./shader/geom/nanosuit.geom");
-    Shader blockShader("./shader/vecS/block.vs", "./shader/fs/RBG.frag", "./shader/geom/test.geom");
-    Shader pointShader("./shader/vecS/points.vs", "./shader/fs/points.frag", "./shader/geom/test.geom");
+    Shader instanceShader("./shader/vecS/instance.vs", "./shader/fs/instance.frag", "./shader/geom/Triangle.geom");
 
-    Model nanosuit("./model/nanosuit_reflection/nanosuit.obj");
+    // 获取位移数据
+    GetOffsetPosition(quadOffsetP);
 
-    // block
-    glGenBuffers(1, &blockVBO);
-    glGenVertexArrays(1, &blockVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, blockVBO);
-    glBindVertexArray(blockVAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(blockVertices), blockVertices, GL_STATIC_DRAW);
+    /* bind */
+    glGenBuffers(1, &quaVBO);
+    glGenVertexArrays(1, &quaVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quaVBO);
+    glBindVertexArray(quaVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+    glGenBuffers(1, &instanceVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, 100*sizeof(glm::vec2), quadOffsetP, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // 还是不太明白使用方法
+    // -猜测:若2总总共的数据右100个，那么要实现的实例数就是100/divisor个
+    glVertexAttribDivisor(2, 98);
     glBindVertexArray(0);
 
-    // point
-    glGenBuffers(1, &pointVBO);
-    glGenVertexArrays(1, &pointVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
-    glBindVertexArray(pointVAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
-    glBindVertexArray(0);
-
-    // uniform内存
-    GLuint uboMatrices;
+    /* uniform内存 */
+    /*
     glGenBuffers(1, &uboMatrices);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
     glBufferData(GL_UNIFORM_BUFFER, 3*sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     // 用于指定哪块uniformBlock绑定哪段内存，并且为uniformBlock绑定标号(0)
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 3*sizeof(glm::mat4));
+    */
+    /*
+    glGenBuffers(1, &uboOffset);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboOffset);
+    glBufferData(GL_UNIFORM_BUFFER, 100*sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // 指定编号
+    glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboOffset, 0, 100*sizeof(glm::vec2));
+    */
+
+    // 填充到shader里
+    instanceShader.Use();
+    for(GLuint i = 0; i < 100; ++i)
+    {
+        string idx = std::__cxx11::to_string(i);
+        GLuint location = glGetUniformLocation(instanceShader.Program, ("iOffset["+ idx +"]").c_str());
+        glUniform2f(location, quadOffsetP[i].x, quadOffsetP[i].y);
+    }
 
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
@@ -273,67 +204,20 @@ int main()
         // 构造裁剪空间
         glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
         // 写入uniformBuffer
+        /*
+        glUniformBlockBinding(instanceShader.Program,
+                              glGetUniformBlockIndex(instanceShader.Program, "iOffset"), 0);
         glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        */
 
         // nanosuit 加载
-        nanosuitShader.Use();
-        glUniformBlockBinding(nanosuitShader.Program,
-                              glGetUniformBlockIndex(nanosuitShader.Program, "Matrices"), 0);
-        glUniformBlockBinding(nanosuitShader1.Program,
-                              glGetUniformBlockIndex(nanosuitShader1.Program, "Matrices"), 0);
-        //glActiveTexture(GL_TEXTURE3);
-        //glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
-        //glUniform1i(glGetUniformLocation(nanosuitShader.Program, "texture_skybox"), 3);
-        //glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        //glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        model = uniM4;
-        model = glm::translate(model, glm::vec3(blockPosition[1]));
-        model = glm::scale(model, glm::vec3(0.2));
-        //glUniformMatrix4fv(glGetUniformLocation(nanosuitShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        glUniform1f(glGetUniformLocation(nanosuitShader.Program, "time"), (GLfloat)glfwGetTime());
-        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) , glm::value_ptr(model));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-        nanosuit.Draw(nanosuitShader);
-        nanosuit.Draw(nanosuitShader1);
-        glActiveTexture(GL_TEXTURE0);
-
-        // code block
-        // 绑定着色器中uniform结构体的位置(0)
-        glUniformBlockBinding(blockShader.Program,
-                              glGetUniformBlockIndex(blockShader.Program, "Matrices"), 0);
-
-        blockShader.Use();
-        glBindVertexArray(blockVAO);
-        for(GLuint i = 0;i < blockNum; ++i)
-        {
-            model = glm::translate(uniM4, blockPosition[i]);
-            glUniform1i(glGetUniformLocation(blockShader.Program, "flag"), i);
-            glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-            glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(model));
-            glBindBuffer(GL_UNIFORM_BUFFER, 0);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        instanceShader.Use();
+        glBindVertexArray(quaVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
         glBindVertexArray(0);
-/*
-        // point
-        // 绑定着色器中uniform结构体的位置(0)
-        glUniformBlockBinding(pointShader.Program,
-                              glGetUniformBlockIndex(pointShader.Program, "Matrices"), 0);
-
-        pointShader.Use();
-        glBindVertexArray(pointVAO);
-        model = uniM4;
-        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(model));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glDrawArrays(GL_POINTS, 0, 4);
-        glBindVertexArray(0);
-*/
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
 
@@ -394,7 +278,7 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     glfwSetScrollCallback(window, scroll_callback);
 
     // 设置鼠标隐藏并且不能移除窗口
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
@@ -608,3 +492,21 @@ void DrawTriangle(const DrawPara data)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+// 获取位移数据
+void GetOffsetPosition(glm::vec2* offsetPosition)
+{
+    int cnt = 0;
+    GLfloat offset = 0.2;
+    GLfloat xPos, yPos;
+    yPos = 0.9;
+    for(int i = 0; i < 10; ++i)
+    {
+        xPos = -0.9;
+        for(int j=0;j < 10; ++j)
+        {
+            offsetPosition[cnt++] = glm::vec2(xPos, yPos);
+            xPos += offset;
+        }
+        yPos -= offset;
+    }
+}
