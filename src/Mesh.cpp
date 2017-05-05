@@ -104,7 +104,7 @@ void Mesh::Draw(Shader shader)
     }
 
     // 绘制Mesh
-    shader.Use();
+    //shader.Use();
     //  cout << VAO << ' ' << VBO << ' ' << EBO << endl;
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);

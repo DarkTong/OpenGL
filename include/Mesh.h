@@ -42,6 +42,7 @@ struct Texture
 class Mesh
 {
 public:
+    GLuint VAO, VBO, EBO;
     // 定点信息
     vector<Vertex> vertices;
     // 纹理信息
@@ -57,7 +58,6 @@ public:
 protected:
 
 private:
-    GLuint VAO, VBO, EBO;
     void setupMesh();
 };
 

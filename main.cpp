@@ -42,39 +42,15 @@ glm::mat4 uniM4;
 glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 // 缓冲对象
-GLuint blockVAO, blockVBO;
-GLuint quaVAO, quaVBO;
+GLuint plantVBO, plantVAO;
 // 纹理对象
-GLuint blockTexture, skyboxTexture;
-GLint containerTexture, awesomefaceTexture;
 // uniform对象
-GLuint uboMatrices, uboOffset;
+GLuint uboMatrices;
 // 实例化数组缓冲对象
-GLuint instanceVBO;
 
-// quadrilateral
-GLfloat quadVertices[] = {
-    //  ---位置---   ------颜色-------
-    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
-     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
-    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
 
-    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
-     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
-     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
-};
-
-// block位置
-glm::vec3 blockPosition[] = {
-    glm::vec3(-0.6, -0.6, -1.0),
-    glm::vec3(-0.6, 0.6, -1.0),
-    glm::vec3(0.6, 0.6, -1.0),
-    glm::vec3(0.6, -0.6, -1.0),
-};
-GLuint blockNum = 4;
-
-// offset position
-glm::vec2 quadOffsetP[100];
+// 行星位置
+glm::vec2 rockPos[1000];
 
 struct DrawPara
 {
@@ -98,7 +74,7 @@ struct DrawPara
 
 /* 创建摄影机对象 */
 Camer camer((float)WIDTH, (float)HEIGHT,
-        glm::vec3(0.0, 3.0, 2.0));
+        glm::vec3(0.0, 50.0, 200.0));
 
 // Function prototypes
 void init();
@@ -116,7 +92,7 @@ void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm:
 void DrawTriangle(const DrawPara data);
 
 /* temp */
-void GetOffsetPosition(glm::vec2* offsetPosition);
+void buildModelArray(glm::mat4*& modelArray, int num);
 
 int main()
 {
@@ -129,58 +105,66 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader instanceShader("./shader/vecS/instance.vs", "./shader/fs/instance.frag", "./shader/geom/Triangle.geom");
+    //Shader instanceShader("./shader/vecS/instance.vs", "./shader/fs/instance.frag", "./shader/geom/Triangle.geom");
+    Shader plantShader("./shader/vecS/plant.vs", "./shader/fs/plant.frag", "./shader/geom/Triangle.geom");
+    Shader rockShader("./shader/vecS/rock.vs", "./shader/fs/rock.frag", "./shader/geom/Triangle.geom");
 
     // 获取位移数据
-    GetOffsetPosition(quadOffsetP);
+    //GetOffsetPosition(quadOffsetP);
+    /* model */
+    Model plant("./model/plant/planet.obj");
+    Model rock("./model/rock/rock.obj");
 
     /* bind */
-    glGenBuffers(1, &quaVBO);
-    glGenVertexArrays(1, &quaVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quaVBO);
-    glBindVertexArray(quaVAO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(2*sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-    glGenBuffers(1, &instanceVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, 100*sizeof(glm::vec2), quadOffsetP, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // 还是不太明白使用方法
-    // -猜测:若2总总共的数据右100个，那么要实现的实例数就是100/divisor个
-    glVertexAttribDivisor(2, 98);
-    glBindVertexArray(0);
 
     /* uniform内存 */
-    /*
     glGenBuffers(1, &uboMatrices);
     glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 3*sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     // 用于指定哪块uniformBlock绑定哪段内存，并且为uniformBlock绑定标号(0)
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 3*sizeof(glm::mat4));
-    */
-    /*
-    glGenBuffers(1, &uboOffset);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboOffset);
-    glBufferData(GL_UNIFORM_BUFFER, 100*sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
-    // 指定编号
-    glBindBufferRange(GL_UNIFORM_BUFFER, 1, uboOffset, 0, 100*sizeof(glm::vec2));
-    */
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2*sizeof(glm::mat4));
 
-    // 填充到shader里
-    instanceShader.Use();
-    for(GLuint i = 0; i < 100; ++i)
+    // 绑定Shader 中的 uniform Block
+    glUniformBlockBinding(plantShader.Program,
+                              glGetUniformBlockIndex(plantShader.Program, "Matrices"), 0);
+    glUniformBlockBinding(rockShader.Program,
+                              glGetUniformBlockIndex(rockShader.Program, "Matrices"), 0);
+
+    // 生成模块举证
+    glm::mat4* modelArray = NULL;
+    int num = 10000;
+    buildModelArray(modelArray, num);
+
+    // 实例缓存
+
+    for(GLuint i = 0; i < rock.meshes.size(); ++i)
     {
-        string idx = std::__cxx11::to_string(i);
-        GLuint location = glGetUniformLocation(instanceShader.Program, ("iOffset["+ idx +"]").c_str());
-        glUniform2f(location, quadOffsetP[i].x, quadOffsetP[i].y);
+        // vertex Buffer Object
+        GLuint rockInstance;
+        glGenBuffers(1, &rockInstance);
+        glBindBuffer(GL_ARRAY_BUFFER, rockInstance);
+        glBufferData(GL_ARRAY_BUFFER, num*sizeof(glm::mat4), &modelArray[0], GL_STATIC_DRAW);
+        // vertex attributes
+        glBindVertexArray(rock.meshes[i].VAO);
+        GLsizei svec4 = sizeof(glm::vec4);
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4*svec4, 0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)svec4);
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)(2*svec4));
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)(3*svec4));
+
+        glVertexAttribDivisor(3, 1);
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+
+        glBindVertexArray(0);
     }
+
 
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
@@ -202,26 +186,41 @@ int main()
         // 构造观察空间
         glm::mat4 view = camer.getViewMartix();
         // 构造裁剪空间
-        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 300.0f);
+        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 600.0f);
         // 写入uniformBuffer
-        /*
-        glUniformBlockBinding(instanceShader.Program,
-                              glGetUniformBlockIndex(instanceShader.Program, "iOffset"), 0);
         glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
-        glBufferSubData(GL_UNIFORM_BUFFER, 2*sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        */
 
-        // nanosuit 加载
-        instanceShader.Use();
-        glBindVertexArray(quaVAO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
-        glBindVertexArray(0);
+        // plant
+        // -写模型矩阵
+        plantShader.Use();
+        model = glm::translate(uniM4, glm::vec3(0.0, 0.0, 0.0));
+        model = glm::scale(model, glm::vec3(4.0));
+        glUniformMatrix4fv(glGetUniformLocation(plantShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        plant.Draw(plantShader);
+
+        // rock
+        // -写模型矩阵
+        //model = glm::translate(uniM4, glm::vec3(5.0, 5.0, 0.0));
+        //glUniformMatrix4fv(glGetUniformLocation(rockShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        //rock.Draw(rockShader);
+        rockShader.Use();
+        glBindTexture(GL_TEXTURE_2D, rock.texturesLoads[0].id);
+        for(GLuint i = 0; i < rock.meshes.size(); ++i)
+        {
+            glBindVertexArray(rock.meshes[i].VAO);
+            glUniform1f(glGetUniformLocation(rockShader.Program, "time"), (float)glfwGetTime());
+            glDrawElementsInstanced(GL_TRIANGLES, rock.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, num);
+            glBindVertexArray(0);
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
 
     }
+    delete[] modelArray;
     // 结束后正确释放之前分配的所有资源
     glfwTerminate();
     return 0;
@@ -278,7 +277,7 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     glfwSetScrollCallback(window, scroll_callback);
 
     // 设置鼠标隐藏并且不能移除窗口
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
@@ -510,3 +509,36 @@ void GetOffsetPosition(glm::vec2* offsetPosition)
         yPos -= offset;
     }
 }
+
+// 获取rock model数据
+void buildModelArray(glm::mat4*& modelArray, int num)
+{
+    modelArray = new glm::mat4[num];
+    srand(glfwGetTime());
+    GLfloat radius = 150.0;
+    GLfloat offset = 50;
+
+    for(int i = 0; i < num; ++i)
+    {
+        glm::mat4 model;
+        // 1. Translation: display along circle with 'radius'  in range [-offset, offset]
+        GLfloat angle = i*1.0 / num * 360.0;
+        GLfloat displacement = (rand() % (GLint)(2*offset*100)) / 100.0 - offset; //保证范围在[-offset, offset]内
+        GLfloat x = radius * sin(angle) + displacement;
+        displacement = (rand() % (GLint)(2*offset*100)) / 100.0 - offset;
+        GLfloat y = displacement * 0.5;
+        displacement = (rand() % (GLint)(2*offset*100)) / 100.0 - offset;
+        GLfloat z = radius * cos(angle) + displacement;
+        model = glm::translate(model, glm::vec3(x, y, z));
+        // 2.Scale: Scale between 0.05, 0.25f;
+        GLfloat scale = (rand()%20 + 5) / 100.0;
+        model = glm::scale(model, glm::vec3(scale));
+        // 3.Rotation: add random rotation a (semi)randomly picked axis vector
+        GLfloat rotAngle = (rand()%360);
+        model = glm::rotate(model, rotAngle, glm::vec3(0.2, 0.3, 0.4));
+        modelArray[i] = model;
+    }
+}
+
+
+

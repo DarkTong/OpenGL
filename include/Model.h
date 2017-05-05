@@ -14,14 +14,16 @@ public:
     virtual ~Model();
     void Draw(Shader shader);
 
+    vector<Mesh> meshes;
+    vector<Texture> texturesLoads;
 protected:
 
 private:
     // 模型数据
-    vector<Mesh> meshes;
+
     string directory;
     // 已加载过的纹理
-    vector<Texture> texturesLoads;
+
     // 函数
     void loadModel(string path);
     void processNode(aiNode* node, const aiScene* scene);

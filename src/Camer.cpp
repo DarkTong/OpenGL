@@ -7,7 +7,7 @@ const GLfloat Camer::PITCH=0.0;
 const GLfloat Camer::YAW=-90.0;
 const GLfloat Camer::SENSITIVITY=0.05;
 //const GLfloat Camer::SPEED=0.0001;
-const GLfloat Camer::SPEED=0.003;
+const GLfloat Camer::SPEED=0.5;//0.003;
 const GLfloat Camer::FOV=45.0;
 const glm::vec3 Camer::WUP = glm::vec3(0.0, 1.0, 0.0);
 const glm::vec3 Camer::FRONT = glm::vec3(0.0, 0.0, -1.0);
@@ -68,8 +68,8 @@ void Camer::updateCamer()
 void Camer::doCamerMovement(Camer_Movement direction, GLfloat curTime)
 {
     this->currentFrame = curTime;
-    //GLfloat deltTime = (currentFrame - lastFrame);
-    GLfloat camerSpeed = camerSpeedC;
+    GLfloat deltTime = (currentFrame - lastFrame);
+    GLfloat camerSpeed = this->camerSpeedC;// * deltTime;
     this->lastFrame = currentFrame;
     // 摄像机前移
     glm::vec3 tmp;
