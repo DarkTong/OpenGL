@@ -29,8 +29,8 @@
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 // 颜色参数
-//double red=1.0, green=1.0, bule=1;
-double red=0.1, green=0.1, bule=0.1;
+double red=1.0, green=1.0, blue=1.0;
+//double red=0.1, green=0.1, blue=0.1;
 
 // 按键记录
 GLboolean keyF[1024]= {0};
@@ -42,15 +42,15 @@ glm::mat4 uniM4;
 glm::vec3 lightColor(1.0, 1.0, 1.0);
 
 // 缓冲对象
-GLuint plantVBO, plantVAO;
+GLuint quadVAO, cubeVAO, planeVAO;
 // 纹理对象
+GLuint quadTex, cubeTex;
 // uniform对象
 GLuint uboMatrices;
 // 实例化数组缓冲对象
 
-
-// 行星位置
-glm::vec2 rockPos[1000];
+// light position
+glm::vec3 lightPos = glm::vec3(-2.0, 4.0, -1.0);
 
 struct DrawPara
 {
@@ -74,7 +74,7 @@ struct DrawPara
 
 /* 创建摄影机对象 */
 Camer camer((float)WIDTH, (float)HEIGHT,
-        glm::vec3(0.0, 50.0, 200.0));
+        glm::vec3(0.0, 0.0, 2.0));
 
 // Function prototypes
 void init();
@@ -90,6 +90,11 @@ GLuint BindCubeTexture(const string path);
 GLuint generateAttachmentTexture(GLboolean depth = GL_FALSE, GLboolean stencil = GL_FALSE);
 void sortPosition(map<GLfloat, int> &hasSortPos, glm::vec3 camerPos, vector<glm::vec3> &mArray);
 void DrawTriangle(const DrawPara data);
+// 渲染
+void RenderShader(Shader shader);
+void RenderQuad();
+void RenderCube();
+void RenderPlane();
 
 /* temp */
 void buildModelArray(glm::mat4*& modelArray, int num);
@@ -105,17 +110,33 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    //Shader instanceShader("./shader/vecS/instance.vs", "./shader/fs/instance.frag", "./shader/geom/Triangle.geom");
-    Shader plantShader("./shader/vecS/plant.vs", "./shader/fs/plant.frag", "./shader/geom/Triangle.geom");
-    Shader rockShader("./shader/vecS/rock.vs", "./shader/fs/rock.frag", "./shader/geom/Triangle.geom");
+    Shader shader("./shader/vecS/plane.vs", "./shader/fs/blinn_phong.frag", "./shader/geom/Triangle.geom");
+    Shader shadowShader("./shader/vecS/shadow.vs", "./shader/fs/shadow.frag", "./shader/geom/Triangle.geom");
+    Shader debugDepthMapShader("./shader/vecS/debugDepthMap.vs", "./shader/fs/debugDepthMap.frag", "./shader/geom/Triangle.geom");
 
-    // 获取位移数据
-    //GetOffsetPosition(quadOffsetP);
-    /* model */
-    Model plant("./model/plant/planet.obj");
-    Model rock("./model/rock/rock.obj");
+    /* texture */
+    // 生成深度贴图
+    const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    GLuint depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    // 纹理附件,深度值用浮点值表示-GL_FLOAT
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    /* bind */
+    /* fragment */
+    GLuint depthMapVBO;
+    glGenFramebuffers(1, &depthMapVBO);
+    // 作为帧缓冲的深度缓冲
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapVBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     /* uniform内存 */
     glGenBuffers(1, &uboMatrices);
@@ -126,45 +147,10 @@ int main()
     glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2*sizeof(glm::mat4));
 
     // 绑定Shader 中的 uniform Block
-    glUniformBlockBinding(plantShader.Program,
-                              glGetUniformBlockIndex(plantShader.Program, "Matrices"), 0);
-    glUniformBlockBinding(rockShader.Program,
-                              glGetUniformBlockIndex(rockShader.Program, "Matrices"), 0);
-
-    // 生成模块举证
-    glm::mat4* modelArray = NULL;
-    int num = 10000;
-    buildModelArray(modelArray, num);
-
-    // 实例缓存
-
-    for(GLuint i = 0; i < rock.meshes.size(); ++i)
-    {
-        // vertex Buffer Object
-        GLuint rockInstance;
-        glGenBuffers(1, &rockInstance);
-        glBindBuffer(GL_ARRAY_BUFFER, rockInstance);
-        glBufferData(GL_ARRAY_BUFFER, num*sizeof(glm::mat4), &modelArray[0], GL_STATIC_DRAW);
-        // vertex attributes
-        glBindVertexArray(rock.meshes[i].VAO);
-        GLsizei svec4 = sizeof(glm::vec4);
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4*svec4, 0);
-        glEnableVertexAttribArray(4);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)svec4);
-        glEnableVertexAttribArray(5);
-        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)(2*svec4));
-        glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4*svec4, (GLvoid*)(3*svec4));
-
-        glVertexAttribDivisor(3, 1);
-        glVertexAttribDivisor(4, 1);
-        glVertexAttribDivisor(5, 1);
-        glVertexAttribDivisor(6, 1);
-
-        glBindVertexArray(0);
-    }
-
+    glUniformBlockBinding(shader.Program,
+                              glGetUniformBlockIndex(shader.Program, "Matrices"), 0);
+    glUniformBlockBinding(debugDepthMapShader.Program,
+                              glGetUniformBlockIndex(debugDepthMapShader.Program, "Matrices"), 0);
 
     /* 画图（渲染）*/
     while(!glfwWindowShouldClose(window)) // 检查GLFW是否被要求退出
@@ -174,10 +160,71 @@ int main()
         // 摄影机移动
         doCamerMovement();
 
+        // 1.首先渲染深度贴图
+//        glEnable(GL_CULL_FACE);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapVBO);
+        // 清空帧缓冲数据
+        //glClear(GL_DEPTH_BITS);  // --> 写错了
+        glClear(GL_DEPTH_BUFFER_BIT);
+        // --ConfigureShaderAndMatrices
+        GLfloat near_plane = 1.0, far_plane = 7.5f;
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+        shadowShader.Use();
+        glUniformMatrix4fv(glGetUniformLocation(shadowShader.Program, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        // --RenderScene
+    //    glCullFace(GL_FRONT);
+        RenderShader(shadowShader);
+  //      glCullFace(GL_BACK);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//        glDisable(GL_CULL_FACE);
+
+        // 2.正常渲染
+        glViewport(0, 0, WIDTH, HEIGHT);
+        // 清空数据
+        glEnable(GL_DEPTH_TEST);
+        glClearColor(red, green, blue, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // --ConfigureShaderAndMatricecs
+        glm::mat4 view = camer.getViewMartix();
+        glm::mat4 projection = glm::perspective(camer.camerFov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.0f);
+        // 写入uniformBuffer
+        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        shader.Use();
+        if(quadTex == 0)
+            quadTex = BindTexture("./texture/plane2.jpg", 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, quadTex);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glUniform1i(glGetUniformLocation(shader.Program, "texture_diffuse1"), 0);
+        glUniform1i(glGetUniformLocation(shader.Program, "depthMap"), 1);
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(glm::mat4()));
+        glUniform3f(glGetUniformLocation(shader.Program, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(glGetUniformLocation(shader.Program, "camerPos"), camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        // --RenderScene
+        RenderShader(shader);
+
+        // 3.Render depth map
+        debugDepthMapShader.Use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        //RenderQuad();
+
+
+
+/*
         // 开启深度测试
         glEnable(GL_DEPTH_TEST);
         // 渲染指令， 创建完窗口我们就可以通知GLFW将我们窗口的上下文设置为当前线程的主上下文了。（背景色）
-        glClearColor(red, green, bule, 1.0f);
+        glClearColor(red, green, blue, 1.0f);
         // 清除颜色缓存，清除深度缓存
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -193,34 +240,24 @@ int main()
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        // plant
-        // -写模型矩阵
-        plantShader.Use();
-        model = glm::translate(uniM4, glm::vec3(0.0, 0.0, 0.0));
-        model = glm::scale(model, glm::vec3(4.0));
-        glUniformMatrix4fv(glGetUniformLocation(plantShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        plant.Draw(plantShader);
-
-        // rock
-        // -写模型矩阵
-        //model = glm::translate(uniM4, glm::vec3(5.0, 5.0, 0.0));
-        //glUniformMatrix4fv(glGetUniformLocation(rockShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        //rock.Draw(rockShader);
-        rockShader.Use();
-        glBindTexture(GL_TEXTURE_2D, rock.texturesLoads[0].id);
-        for(GLuint i = 0; i < rock.meshes.size(); ++i)
-        {
-            glBindVertexArray(rock.meshes[i].VAO);
-            glUniform1f(glGetUniformLocation(rockShader.Program, "time"), (float)glfwGetTime());
-            glDrawElementsInstanced(GL_TRIANGLES, rock.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, num);
-            glBindVertexArray(0);
-        }
+        // plane
+        planeShader.Use();
+        glUniformMatrix4fv(glGetUniformLocation(planeShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glUniform3f(glGetUniformLocation(planeShader.Program, "lightPos"), 1.0, 2.0, 1.5);
+        glUniform3f(glGetUniformLocation(planeShader.Program, "camerPos"), camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glBindTexture(GL_TEXTURE_2D, planeTexture);
+        glUniform1f(glGetUniformLocation(planeShader.Program, "ambient"), 0.2);
+        glBindVertexArray(planeVAO);
+        //glEnable(GL_FRAMEBUFFER_SRGB);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glDisable(GL_FRAMEBUFFER_SRGB);
+        glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
+*/
         // 交换缓存，增强视觉效果
         glfwSwapBuffers(window);
 
     }
-    delete[] modelArray;
     // 结束后正确释放之前分配的所有资源
     glfwTerminate();
     return 0;
@@ -299,10 +336,10 @@ void changeRGB()
 {
     red += 0.0001;
     green += 0.0002;
-    bule += 0.00001;
+    blue += 0.00001;
     if(red > 0.7) red -= 0.6;
     if(green > 0.6) green -= 0.3;
-    if(bule > 0.9) bule -= 0.6;
+    if(blue > 0.9) blue -= 0.6;
 }
 // 回调函数（操作），根据按键去操作窗口
 void key_callback(GLFWwindow *window, GLint key,  GLint scancode, GLint action, GLint mode)
@@ -540,5 +577,167 @@ void buildModelArray(glm::mat4*& modelArray, int num)
     }
 }
 
+// 渲染现场
+void RenderShader(Shader shader)
+{
+    // plane
+    glm::mat4 model;
+    glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    RenderPlane();
+    // cube
+    int cubeNum = 3;
+    glm::vec3 cubePosition[] = {
+        glm::vec3(0.0, 1.5, 0.0),
+        glm::vec3(2.0, -0.501, 1.0),
+        glm::vec3(-1.0, 0.0, 2.0),
+    };
+    for(int i = 0; i < cubeNum; ++i)
+    {
+        model = glm::mat4();
+        model = glm::translate(model, cubePosition[i]);
+        if(i == cubeNum - 1)
+            model = glm::rotate(model, 60.0f, glm::normalize(glm::vec3(1.0, 2.0, 3.0)));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        RenderCube();
+    }
+}
+
+// 渲染地板
+void RenderPlane()
+{
+    if( planeVAO == 0)
+    {
+        GLfloat planeVertices[] = {
+            // Positions            // Normals         // Texture Coords
+            25.0f, -1.0f, 25.0f,   0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
+            -25.0f, -1.0f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f,
+            -25.0f, -1.0f, 25.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+
+            25.0f, -1.0f, 25.0f,   0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
+            25.0f, -1.0f, -25.0f,  0.0f, 1.0f, 0.0f, 25.0f, 25.0f,
+            -25.0f, -1.0f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f
+        };
+        GLuint planeVBO;
+        glGenBuffers(1, &planeVBO);
+        glGenVertexArrays(1, &planeVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+        glBindVertexArray(planeVAO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
+        glBindVertexArray(0);
+    }
+//    if(quadTex == 0)
+//        quadTex = BindTexture("./texture/plane2.jpg", 1);
+//    glBindTexture(GL_TEXTURE_2D, quadTex);
+    glBindVertexArray(planeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+//    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// 渲染立方体
+void RenderCube()
+{
+    if( cubeVAO == 0)
+    {
+        GLfloat cubeVertices[] = {
+            // Back face
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, // Bottom-left
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,  // top-right
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,  // bottom-left
+            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,// top-left
+            // Front face
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // bottom-right
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // top-right
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-right
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,  // top-left
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom-left
+            // Left face
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  // bottom-right
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+            // Right face
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-left
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
+            // Bottom face
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, // top-left
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,// bottom-left
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom-left
+            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom-right
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+            // Top face
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f // bottom-left
+        };
+        GLuint cubeVBO;
+        glGenBuffers(1, &cubeVBO);
+        glGenVertexArrays(1, &cubeVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+        glBindVertexArray(cubeVAO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(0));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
+        glBindVertexArray(0);
+    }
+//    if(cubeTex == 0)
+//        cubeTex = BindTexture("./texture/container2.png", 1);
+//    glBindTexture(GL_TEXTURE_2D, cubeTex);
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+//    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void RenderQuad()
+{
+    if( quadVAO == 0)
+    {
+        GLfloat quadVertices[] = {
+            // Positions        // Texture Coords
+            -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+        };
+        GLuint quadVBO;
+        glGenBuffers(1, &quadVBO);
+        glGenVertexArrays(1, &quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBindVertexArray(quadVAO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+        glBindVertexArray(0);
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
 
 

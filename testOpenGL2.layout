@@ -2,46 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="src/Camer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include/Model.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1607" topLine="55" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5614" topLine="106" />
-		</Cursor>
-		<Folding>
-			<Collapse line="51" />
-			<Collapse line="58" />
-			<Collapse line="245" />
-			<Collapse line="295" />
-			<Collapse line="299" />
-			<Collapse line="303" />
-			<Collapse line="310" />
-			<Collapse line="325" />
-			<Collapse line="349" />
-			<Collapse line="366" />
-			<Collapse line="388" />
-			<Collapse line="413" />
-			<Collapse line="415" />
-			<Collapse line="423" />
-			<Collapse line="429" />
-		</Folding>
-	</File>
-	<File name="include/Mesh.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="825" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="include/Camer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1892" topLine="70" />
+			<Cursor1 position="252" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="src/Mesh.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3033" topLine="85" />
+			<Cursor1 position="2930" topLine="87" />
+		</Cursor>
+	</File>
+	<File name="src/Camer.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="269" topLine="57" />
 		</Cursor>
 	</File>
 	<File name="include/Shader.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -49,19 +22,64 @@
 			<Cursor1 position="346" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="include/Model.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include/Camer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="204" topLine="0" />
+			<Cursor1 position="1892" topLine="70" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7467" topLine="163" />
+		</Cursor>
+		<Folding>
+			<Collapse line="53" />
+			<Collapse line="60" />
+			<Collapse line="251" />
+			<Collapse line="266" />
+			<Collapse line="270" />
+			<Collapse line="281" />
+			<Collapse line="319" />
+			<Collapse line="329" />
+			<Collapse line="335" />
+			<Collapse line="342" />
+			<Collapse line="348" />
+			<Collapse line="354" />
+			<Collapse line="365" />
+			<Collapse line="369" />
+			<Collapse line="373" />
+			<Collapse line="377" />
+			<Collapse line="384" />
+			<Collapse line="399" />
+			<Collapse line="423" />
+			<Collapse line="440" />
+			<Collapse line="462" />
+			<Collapse line="487" />
+			<Collapse line="489" />
+			<Collapse line="497" />
+			<Collapse line="503" />
+			<Collapse line="516" />
+			<Collapse line="522" />
+			<Collapse line="525" />
+			<Collapse line="535" />
+			<Collapse line="590" />
+			<Collapse line="628" />
+			<Collapse line="631" />
+			<Collapse line="699" />
+		</Folding>
+	</File>
+	<File name="src/Model.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="262" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="include/Mesh.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="738" topLine="20" />
 		</Cursor>
 	</File>
 	<File name="src/Shader.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3138" topLine="72" />
-		</Cursor>
-	</File>
-	<File name="src/Model.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4602" topLine="57" />
+			<Cursor1 position="3140" topLine="66" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
