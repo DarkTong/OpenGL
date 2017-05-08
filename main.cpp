@@ -110,33 +110,56 @@ int main()
         return -1;
 
     /* 1.创建顶点着色器和线段着色器 */
-    Shader shader("./shader/vecS/plane.vs", "./shader/fs/blinn_phong.frag", "./shader/geom/Triangle.geom");
-    Shader shadowShader("./shader/vecS/shadow.vs", "./shader/fs/shadow.frag", "./shader/geom/Triangle.geom");
+    Shader shader("./shader/vecS/plane.vs", "./shader/fs/blinn_phong.frag", "");
+    Shader shadowShader("./shader/vecS/shadowCube.vs", "./shader/fs/shadowCube.frag", "./shader/geom/shadowCube.geom");
     Shader debugDepthMapShader("./shader/vecS/debugDepthMap.vs", "./shader/fs/debugDepthMap.frag", "./shader/geom/Triangle.geom");
 
     /* texture */
-    // 生成深度贴图
+    // 生成深度贴图 - cube
     const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
     GLuint depthMap;
     glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    // 纹理附件,深度值用浮点值表示-GL_FLOAT
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
+    // 纹理附件,深度值用浮点值表示-GL_FLOAT - 为每个面申请空间
+    for(GLuint i=0;i<6;++i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
                  SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     /* fragment */
     GLuint depthMapVBO;
     glGenFramebuffers(1, &depthMapVBO);
-    // 作为帧缓冲的深度缓冲
+    // 作为帧缓冲的深度缓冲 - cube
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapVBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    /* parameter */
+    // shadowShader
+    GLfloat near_plane = 0.1, far_plane = 100.0, aspect = (GLfloat)SHADOW_WIDTH/(GLfloat)SHADOW_HEIGHT;
+    glm::mat4 shadowProj = glm::perspective((GLfloat)90.0, aspect, near_plane, far_plane);
+    vector<glm::mat4> shadowTransforms;
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0,1.0,0.0)));
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0,1.0,0.0)));
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0,0.0,1.0)));
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0,0.0,-1.0)));
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0,1.0,0.0)));
+    shadowTransforms.push_back(shadowProj *
+                glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0,1.0,0.0)));
 
     /* uniform内存 */
     glGenBuffers(1, &uboMatrices);
@@ -168,12 +191,16 @@ int main()
         //glClear(GL_DEPTH_BITS);  // --> 写错了
         glClear(GL_DEPTH_BUFFER_BIT);
         // --ConfigureShaderAndMatrices
-        GLfloat near_plane = 1.0, far_plane = 7.5f;
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0.0, 1.0, 0.0));
-        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+        // ----由于是定点光源，所以使用透视投影
         shadowShader.Use();
-        glUniformMatrix4fv(glGetUniformLocation(shadowShader.Program, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        for(int i=0;i<6;++i)
+        {
+            GLuint loc = glGetUniformLocation(shadowShader.Program, ("shadowMatrices[" + std::__cxx11::to_string(i) + "]").c_str());
+            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(shadowTransforms[i]));
+        }
+        glUniform3f(glGetUniformLocation(shadowShader.Program, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+        glUniform1f(glGetUniformLocation(shadowShader.Program, "far_plane"), far_plane);
+        glUniformMatrix4fv(glGetUniformLocation(shadowShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(glm::mat4()));
         // --RenderScene
     //    glCullFace(GL_FRONT);
         RenderShader(shadowShader);
@@ -202,20 +229,21 @@ int main()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, quadTex);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
         glUniform1i(glGetUniformLocation(shader.Program, "texture_diffuse1"), 0);
         glUniform1i(glGetUniformLocation(shader.Program, "depthMap"), 1);
-        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+        //glUniformMatrix4fv(glGetUniformLocation(shader.Program, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(glm::mat4()));
         glUniform3f(glGetUniformLocation(shader.Program, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(glGetUniformLocation(shader.Program, "camerPos"), camer.camerPos.x, camer.camerPos.y, camer.camerPos.z);
+        glUniform1f(glGetUniformLocation(shader.Program, "far_plane"), far_plane);
         // --RenderScene
         RenderShader(shader);
 
         // 3.Render depth map
         debugDepthMapShader.Use();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
         //RenderQuad();
 
 
@@ -314,7 +342,7 @@ int buildWindow(GLFWwindow *window, const int &WIDTH, const int &HEIGHT)
     glfwSetScrollCallback(window, scroll_callback);
 
     // 设置鼠标隐藏并且不能移除窗口
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /* 开启深度测试 */
     // 意思：检测深度，那么渲染时便会根据深度选择如何渲染
@@ -582,8 +610,13 @@ void RenderShader(Shader shader)
 {
     // plane
     glm::mat4 model;
+    model = glm::translate(model, glm::vec3(0.0));
+    model = glm::scale(model, glm::vec3(20.0));
+    glUniform1i(glGetUniformLocation(shader.Program, "reverse_normals"), 1);
     glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-    RenderPlane();
+    RenderCube();
+    glUniform1i(glGetUniformLocation(shader.Program, "reverse_normals"), 0);
+    //RenderPlane();
     // cube
     int cubeNum = 3;
     glm::vec3 cubePosition[] = {

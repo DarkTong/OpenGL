@@ -1315,7 +1315,7 @@
 
 1493620262 D
 
-1494149934 source:/home/darktong/work/testOpenGL4/main.cpp
+1494215824 source:/home/darktong/work/testOpenGL4/main.cpp
 	<iostream>
 	<cmath>
 	<string>
@@ -1345,11 +1345,12 @@
 	"Camer.h"
 	"Model.h"
 
-1493887607 /home/darktong/work/testOpenGL4/include/Shader.h
+1494209846 /home/darktong/work/testOpenGL4/include/Shader.h
 	<string>
 	<fstream>
 	<sstream>
 	<iostream>
+	<cstring>
 	<GL/glew.h>
 
 1493799192 /home/darktong/work/testOpenGL4/include/Camer.h
@@ -1389,7 +1390,7 @@
 1493832999 source:/home/darktong/work/testOpenGL4/src/Model.cpp
 	"Model.h"
 
-1494037957 source:/home/darktong/work/testOpenGL4/src/Shader.cpp
+1494209993 source:/home/darktong/work/testOpenGL4/src/Shader.cpp
 	"Shader.h"
 
 1493620262 

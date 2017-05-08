@@ -31,11 +31,13 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
         fShaderFile.close();
         fragmentCode = fShaderStream.str();
 
-        gShaderFile.open(geometryPath);
-        gShaderStream << gShaderFile.rdbuf();
-        gShaderFile.close();
-        geometryCode = gShaderStream.str();
-
+        if(geometryPath[0])
+        {
+            gShaderFile.open(geometryPath);
+            gShaderStream << gShaderFile.rdbuf();
+            gShaderFile.close();
+            geometryCode = gShaderStream.str();
+        }
     }
     catch(std::ifstream::failure e)
     {
@@ -74,23 +76,26 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLcha
         std::cout << "ERROR:FRAGMENT　COMPILE FAILED\n" << infoLog << std::endl;
     }
 
-    // 几何着色器
-    geometry = glCreateShader(GL_GEOMETRY_SHADER);
-    glShaderSource(geometry, 1, &gShaderCode, NULL);
-    glCompileShader(geometry);
-    // 判断是否编译错误，有则输出
-    glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
-    if(!success)
+    if(geometryPath[0])
     {
-        glGetShaderInfoLog(geometry, 512, NULL, infoLog);
-        std::cout << "ERROR:GEOMETRY　COMPILE FAILED\n" << infoLog << std::endl;
+        // 几何着色器
+        geometry = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(geometry, 1, &gShaderCode, NULL);
+        glCompileShader(geometry);
+        // 判断是否编译错误，有则输出
+        glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
+        if(!success)
+        {
+            glGetShaderInfoLog(geometry, 512, NULL, infoLog);
+            std::cout << "ERROR:GEOMETRY　COMPILE FAILED\n" << infoLog << std::endl;
+        }
     }
 
     // 3.着色器程序链接
     this->Program = glCreateProgram();
     glAttachShader(this->Program, vertex);
     glAttachShader(this->Program, fragment);
-    //glAttachShader(this->Program, geometry);
+    if(geometryPath[0]) glAttachShader(this->Program, geometry);
     glLinkProgram(this->Program);
     // 打印链接错误
     glGetProgramiv(this->Program, GL_LINK_STATUS, &success);

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cstring>
 
 #include <GL/glew.h>    //OpenGL头文件
 
